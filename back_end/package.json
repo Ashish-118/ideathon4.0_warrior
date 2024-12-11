@@ -1,0 +1,15 @@
+{
+  "name": "back_end",
+  "version": "1.0.0",
+  "description": "This is the backend of the project we are making",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
