@@ -17,6 +17,7 @@ const generateAccessAndRefreshToken = async (userId) => {
         throw new ApiError(500, " Something went wrong while generating access and refresh token")
     }
 }
+
 const signup_part1 = asyncHandler(async (req, res) => {
     const { username, fullName, email, password } = req.body;
 
@@ -41,7 +42,7 @@ const signup_part1 = asyncHandler(async (req, res) => {
         password
     })
 
-    // now removing password and refreshToken  to send as response  , this will remove  password and refreshToken from the database
+    // now removing password and refreshToken  to send as response  , this will not remove  password and refreshToken from the database
     const createdUser = await User.findById(newUser._id).select(
         "-password -refreshToken"
     )
