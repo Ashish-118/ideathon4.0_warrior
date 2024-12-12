@@ -43,3 +43,5 @@ const signup_part1 = asyncHandler(async (req, res) => {
     )
 
 })
+
+export { signup_part1 }
