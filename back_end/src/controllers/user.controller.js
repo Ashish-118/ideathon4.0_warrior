@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js"
+import { uploadOnCloudinary } from "../utils/cloudinary.js"
 
 
 const signup_part1 = asyncHandler(async (req, res) => {
@@ -54,19 +55,21 @@ const signup_part2 = asyncHandler(async (req, res) => {
 
     const user = await User.findById(userId);
 
-    if (!user) {
+    if (!user || user.profileComplete) {
         throw new ApiError(400, "Invalid or already verified user");
     }
-
-    if (typeof mobile_no === 'number' && mobile_no.toString().length === 10) {
+    console.log(mobile_no);
+    if (!(/^\d{10}$/.test(mobile_no))) {
         throw new ApiError(400, "Invalid mobile number");
     }
-
+    // console.log(collegeInfo)
     if (!collegeInfo?.collegeName || !collegeInfo?.yearOfStudy || !collegeInfo?.branch) {
         throw new ApiError(400, "Complete college information is required");
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
+
+    // console.log(avatarLocalPath)
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is required");
     }
@@ -77,7 +80,8 @@ const signup_part2 = asyncHandler(async (req, res) => {
 
     user.collegeInfo = collegeInfo;
     user.mobile_no = mobile_no;
-    user.avatar = avatar;
+
+    user.avatar = avatar.url;
     user.profileComplete = true;
     await user.save();
 
@@ -88,4 +92,7 @@ const signup_part2 = asyncHandler(async (req, res) => {
 
 
 })
-export { signup_part1 }
+export {
+    signup_part1,
+    signup_part2
+}
