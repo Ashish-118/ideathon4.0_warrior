@@ -39,9 +39,53 @@ const signup_part1 = asyncHandler(async (req, res) => {
     }
 
     return res.status(201).json(
-        new ApiResponse(200, createdUser, "User registered Successfully")
+        new ApiResponse(200, createdUser, "User completed part 1 of signup  Successfully")
     )
 
 })
 
+
+const signup_part2 = asyncHandler(async (req, res) => {
+    const { userId, mobile_no, collegeInfo } = req.body;
+
+    if (!userId) {
+        throw new ApiError(400, "User ID is required");
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+        throw new ApiError(400, "Invalid or already verified user");
+    }
+
+    if (typeof mobile_no === 'number' && mobile_no.toString().length === 10) {
+        throw new ApiError(400, "Invalid mobile number");
+    }
+
+    if (!collegeInfo?.collegeName || !collegeInfo?.yearOfStudy || !collegeInfo?.branch) {
+        throw new ApiError(400, "Complete college information is required");
+    }
+
+    const avatarLocalPath = req.files?.avatar[0]?.path;
+    if (!avatarLocalPath) {
+        throw new ApiError(400, "Avatar is required");
+    }
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+    if (!avatar) {
+        throw new ApiError(400, "Error while uploading avatar to cloudinary")
+    }
+
+    user.collegeInfo = collegeInfo;
+    user.mobile_no = mobile_no;
+    user.avatar = avatar;
+    user.profileComplete = true;
+    await user.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Signup completed successfully",
+    });
+
+
+})
 export { signup_part1 }

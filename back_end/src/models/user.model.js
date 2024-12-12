@@ -26,7 +26,7 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String, // cloudingary url will come here
-        required: true,
+        // required: true,
     },
     password: {
         type: String,
@@ -35,24 +35,28 @@ const userSchema = new Schema({
     },
     mobile_no: {
         type: Number,
-        required: true,
+        // required: true,
 
     },
     collegeInfo: {
         collegeName: {
             type: String,
-            required: true
+            // required: true
         },
         yearOfStudy: {
             type: Number,
-            required: true,
+            // required: true,
             min: 1,         // Validation: minimum value 1 (first year)
             max: 5          // Validation: maximum value 5 (final year)
         },
         branch: {
             type: String,
-            required: true,
+            // required: true,
         }
+    },
+    profileComplete: {
+        type: Boolean,
+        default: false
     }
     ,
     refreshToken: {
