@@ -70,7 +70,7 @@ const signup_part2 = asyncHandler(async (req, res) => {
     if (!user || user.profileComplete) {
         throw new ApiError(400, "Invalid or already verified user");
     }
-    console.log(mobile_no);
+
     if (!(/^\d{10}$/.test(mobile_no))) {
         throw new ApiError(400, "Invalid mobile number");
     }
@@ -85,7 +85,9 @@ const signup_part2 = asyncHandler(async (req, res) => {
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is required");
     }
+
     const avatar = await uploadOnCloudinary(avatarLocalPath)
+
     if (!avatar) {
         throw new ApiError(400, "Error while uploading avatar to cloudinary")
     }
@@ -122,6 +124,10 @@ const Login = asyncHandler(async (req, res) => {
         throw new ApiError(401, "User not found")
     }
 
+    if (!user.profileComplete) {
+        throw new ApiError(400, "You have not completed  the full step of  signup")
+
+    }
     const isPasswordCorrect = await user.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
         throw new ApiError(401, "Invalid password")
@@ -129,11 +135,31 @@ const Login = asyncHandler(async (req, res) => {
 
     const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 
+    const loggedInUser = await User.findOne(user._id).select("-password -refreshToken")
 
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
 
-
+    return res.status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    user: loggedInUser, accessToken, refreshToken
+                },
+                "User Logged in successfully"
+            )
+        )
 })
+
+
+
 export {
     signup_part1,
-    signup_part2
+    signup_part2,
+    Login
 }

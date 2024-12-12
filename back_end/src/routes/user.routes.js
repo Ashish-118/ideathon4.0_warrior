@@ -1,7 +1,8 @@
 import { Router } from "express";
 import {
     signup_part1,
-    signup_part2
+    signup_part2,
+    Login
 } from "../controllers/user.controller.js"
 
 import { upload } from "../middlewares/multer.middleware.js";
@@ -17,6 +18,8 @@ router.route("/next/signup").post(
     ]),
     signup_part2
 )
+
+router.route("/Login").post(Login);
 
 
 
