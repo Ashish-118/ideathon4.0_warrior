@@ -4,7 +4,19 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 
+const generateAccessAndRefreshToken = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+        user.refreshToken = refreshToken
 
+        await user.save({ validateBeforeSave: false })
+        return { accessToken, refreshToken }
+    } catch (error) {
+        throw new ApiError(500, " Something went wrong while generating access and refresh token")
+    }
+}
 const signup_part1 = asyncHandler(async (req, res) => {
     const { username, fullName, email, password } = req.body;
 
@@ -62,14 +74,14 @@ const signup_part2 = asyncHandler(async (req, res) => {
     if (!(/^\d{10}$/.test(mobile_no))) {
         throw new ApiError(400, "Invalid mobile number");
     }
-    // console.log(collegeInfo)
+
     if (!collegeInfo?.collegeName || !collegeInfo?.yearOfStudy || !collegeInfo?.branch) {
         throw new ApiError(400, "Complete college information is required");
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
 
-    // console.log(avatarLocalPath)
+
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar is required");
     }
@@ -89,6 +101,35 @@ const signup_part2 = asyncHandler(async (req, res) => {
         success: true,
         message: "Signup completed successfully",
     });
+
+
+})
+
+const Login = asyncHandler(async (req, res) => {
+    const { username, email, password } = req.body;
+
+    if ([username, email, password].some((item) => item?.trim() === "")) {
+        throw new ApiError(400, "All fields are required for Loing")
+    }
+
+    const user = await User.findOne(
+        {
+            $and: [{ username }, { email }]
+        }
+    )
+
+    if (!user) {
+        throw new ApiError(401, "User not found")
+    }
+
+    const isPasswordCorrect = await user.isPasswordCorrect(password);
+    if (!isPasswordCorrect) {
+        throw new ApiError(401, "Invalid password")
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
+
+
 
 
 })
