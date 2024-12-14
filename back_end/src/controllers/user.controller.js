@@ -2,7 +2,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { User } from "../models/user.model.js"
+import { PYQ } from "../models/PYQ.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
+
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -19,9 +21,9 @@ const generateAccessAndRefreshToken = async (userId) => {
 }
 
 const signup_part1 = asyncHandler(async (req, res) => {
-    const { username, fullName, email, password } = req.body;
+    const { username, fullName, email, password, role } = req.body;
 
-    if ([fullName, email, password, username].some((field) => field?.trim() === "")) {
+    if ([fullName, email, password, username, role].some((field) => field?.trim() === "")) {
         throw new ApiError(404, "All fields are required")
     }
 
@@ -39,7 +41,8 @@ const signup_part1 = asyncHandler(async (req, res) => {
         username: username.toLowerCase(),
         fullName,
         email,
-        password
+        password,
+        isAdmin: (role === "faculty")
     })
 
     // now removing password and refreshToken  to send as response  , this will not remove  password and refreshToken from the database
@@ -67,7 +70,6 @@ const signup_part2 = asyncHandler(async (req, res) => {
     }
 
     const user = await User.findById(userId);
-
     if (!user || user.profileComplete) {
         throw new ApiError(400, "Invalid or already verified user");
     }
@@ -76,7 +78,10 @@ const signup_part2 = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid mobile number");
     }
 
-    if (!collegeInfo?.collegeName || !collegeInfo?.yearOfStudy || !collegeInfo?.branch) {
+    if (!collegeInfo?.collegeName) {
+        throw new ApiError(400, "Complete college information is required");
+    }
+    if (((!user.isAdmin) && (!collegeInfo?.yearOfStudy || !collegeInfo?.branch)) || (user.isAdmin && !collegeInfo?.facultyOf)) {
         throw new ApiError(400, "Complete college information is required");
     }
 
@@ -95,7 +100,6 @@ const signup_part2 = asyncHandler(async (req, res) => {
 
     user.collegeInfo = collegeInfo;
     user.mobile_no = mobile_no;
-
     user.avatar = avatar.url;
     user.profileComplete = true;
     await user.save();
@@ -157,10 +161,59 @@ const Login = asyncHandler(async (req, res) => {
         )
 })
 
+const pyqUploader = asyncHandler(async (req, res) => {
+    const { forYear, CourseCode, paperYear, title } = req.body;
+
+    if ([forYear, CourseCode, paperYear, title].some((item) => item?.trim() === "")) {
+        throw new ApiError(404, "All fields are required for pyq uploader")
+    }
+    const Admin = await User.findById(req.user?._id);
+
+    const paperPdf_localPath = req.files?.paperPdf[0]?.path;
+    const solutionPdf_localPath = req.files?.solutionPdf[0]?.path;
+    const solutionVideo_localPath = req.files?.solutionVideo[0]?.path;
+
+    if (!paperPdf_localPath || (!solutionPdf_localPath && !solutionVideo_localPath)) {
+        throw new ApiError(400, "Question Paper and Solution are required  ")
+    }
+
+    const paperPdfLink = await uploadOnCloudinary(paperPdf_localPath)
+    if (!paperPdf) {
+        throw new ApiError(400, "Error while uploading paperPdf to cloudinary")
+    }
+    let solutionPdfLink = null;
+    if (solutionPdf_localPath) {
+        solutionPdfLink = await uploadOnCloudinary(solutionPdf_localPath)
+    }
+    let solutionVideoLink = null
+    if (solutionVideo_localPath) {
+        solutionVideoLink = await uploadOnCloudinary(solutionVideo_localPath)
+    }
+
+
+    const newPYQ = await PYQ.create({
+        forYear,
+        CourseCode,
+        paperYear,
+        title,
+        paperPdf: paperPdfLink?.url || null,
+        solutionPdf: solutionPdfLink?.url || null,
+        solutionVideo: solutionVideoLink?.url || null,
+        sentByAdmin: Admin._id
+    })
+
+    return res.status(200)
+        .json(
+            new ApiResponse(200, newPYQ, "successfully stored new Pyq")
+        )
+
+
+})
 
 
 export {
     signup_part1,
     signup_part2,
-    Login
+    Login,
+    pyqUploader
 }

@@ -43,6 +43,10 @@ const userSchema = new Schema({
             type: String,
             // required: true
         },
+        facultyOf: {
+            type: String,
+            // required: true,
+        },
         yearOfStudy: {
             type: Number,
             // required: true,
@@ -53,6 +57,10 @@ const userSchema = new Schema({
             type: String,
             // required: true,
         }
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
     },
     profileComplete: {
         type: Boolean,
