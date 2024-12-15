@@ -2,9 +2,11 @@ import { Router } from "express";
 import {
     signup_part1,
     signup_part2,
-    Login
+    Login,
+    pyqUploader,
+    pyq_filter
 } from "../controllers/user.controller.js"
-
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
 
@@ -20,7 +22,25 @@ router.route("/next/signup").post(
 )
 
 router.route("/Login").post(Login);
+router.route("/pyqUploader").post(
+    upload.fields([
+        {
+            name: "paperPdf",
+            maxCount: 1
+        },
+        {
+            name: "solutionPdf",
+            maxCount: 1
+        },
+        {
+            name: "solutionVideo",
+            maxCount: 1
+        },
+    ]),
+    verifyJWT, pyqUploader
+);
 
+router.route("/filter").post(verifyJWT, pyq_filter)
 
 
 

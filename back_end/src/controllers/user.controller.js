@@ -177,13 +177,17 @@ const pyqUploader = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Question Paper and Solution are required  ")
     }
 
-    const paperPdfLink = await uploadOnCloudinary(paperPdf_localPath)
-    if (!paperPdf) {
+    const paperPdfLink = await uploadOnCloudinary(paperPdf_localPath, "raw")
+    console.log(paperPdfLink.url);
+    if (!paperPdfLink) {
         throw new ApiError(400, "Error while uploading paperPdf to cloudinary")
     }
     let solutionPdfLink = null;
     if (solutionPdf_localPath) {
-        solutionPdfLink = await uploadOnCloudinary(solutionPdf_localPath)
+
+        solutionPdfLink = await uploadOnCloudinary(solutionPdf_localPath, "raw")
+
+        console.log(solutionPdfLink.url);
     }
     let solutionVideoLink = null
     if (solutionVideo_localPath) {
@@ -193,7 +197,7 @@ const pyqUploader = asyncHandler(async (req, res) => {
 
     const newPYQ = await PYQ.create({
         forYear,
-        CourseCode,
+        courseCode: CourseCode.toUpperCase(),
         paperYear,
         title,
         paperPdf: paperPdfLink?.url || null,
@@ -210,10 +214,51 @@ const pyqUploader = asyncHandler(async (req, res) => {
 
 })
 
+const pyq_filter = asyncHandler(async (req, res) => {
+    const { forYear, courseCode } = req.body
+    const user = await User.findById(req.user?._id)
+    const userCollege = user.collegeInfo.collegeName;
+    if (!forYear && !courseCode) {
+        throw new ApiError(404, "All fields are required for pyq filter year")
+    }
+
+    const filteredPyq = await PYQ.aggregate([
+        {
+            $match: {
+                forYear: forYear || { $exists: true },
+                courseCode: courseCode?.toUpperCase() || { $exists: true }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "sentByAdmin",
+                foreignField: "_id",
+                as: "admin"
+            }
+        },
+        {
+            $match: {
+                "admin.collegeInfo.collegeName": userCollege
+            }
+        }
+
+    ])
+
+    return res.status(200)
+        .json(
+            new ApiResponse(
+                200,
+                filteredPyq,
+                "Successfully filtered Pyqs"
+            )
+        )
+})
 
 export {
     signup_part1,
     signup_part2,
     Login,
-    pyqUploader
+    pyqUploader,
+    pyq_filter
 }
