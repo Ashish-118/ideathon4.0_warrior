@@ -5,7 +5,8 @@ import {
     Login,
     pyqUploader,
     pyq_filter,
-    refreshAccessToken
+    refreshAccessToken,
+    logoutUser
 } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -44,6 +45,8 @@ router.route("/pyqUploader").post(
 router.route("/filter").post(verifyJWT, pyq_filter)
 
 router.route("/refresh-token").post(refreshAccessToken)
+
+router.route("/logout").post(verifyJWT, logoutUser);
 
 
 

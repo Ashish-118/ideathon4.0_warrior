@@ -305,14 +305,30 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 })
 
-const logOut = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user?._id)
-    if (!user) {
-        throw new ApiError(401, "Unauthorized request")
+const logoutUser = asyncHandler(async (req, res) => {
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                refreshToken: null
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+
+    const options = {
+        httpOnly: true,
+        secure: true
     }
-    const update = await User.findByIdAndUpdate(req.user?._id, {
-        refreshToken: undefined
-    })
+
+    return res.status(200)
+        .clearCookie("accessToken", options)
+        .clearCookie("refreshToken", options)
+        .json(new ApiResponse(200, {}, `User logged Out ${req.user.refreshToken}`))
+
 })
 
 export {
@@ -321,5 +337,6 @@ export {
     Login,
     pyqUploader,
     pyq_filter,
-    refreshAccessToken
+    refreshAccessToken,
+    logoutUser
 }
