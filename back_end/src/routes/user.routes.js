@@ -4,7 +4,8 @@ import {
     signup_part2,
     Login,
     pyqUploader,
-    pyq_filter
+    pyq_filter,
+    refreshAccessToken
 } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -41,6 +42,9 @@ router.route("/pyqUploader").post(
 );
 
 router.route("/filter").post(verifyJWT, pyq_filter)
+
+router.route("/refresh-token").post(refreshAccessToken)
+
 
 
 
