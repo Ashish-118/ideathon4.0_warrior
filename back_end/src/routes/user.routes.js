@@ -7,7 +7,8 @@ import {
     pyq_filter,
     refreshAccessToken,
     logoutUser,
-    DeletePyq
+    DeletePyq,
+    getPyq
 } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -50,7 +51,7 @@ router.route("/refresh-token").post(refreshAccessToken)
 router.route("/logout").post(verifyJWT, logoutUser);
 
 router.delete("/pyq/:pyqId", DeletePyq)
-
+router.route("/pyq").post(verifyJWT, getPyq)
 
 
 export default router

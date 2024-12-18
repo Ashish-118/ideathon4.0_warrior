@@ -203,7 +203,9 @@ const pyqUploader = asyncHandler(async (req, res) => {
         paperPdf: paperPdfLink?.url || null,
         solutionPdf: solutionPdfLink?.url || null,
         solutionVideo: solutionVideoLink?.url || null,
-        sentByAdmin: Admin._id
+        sentByAdmin: Admin._id,
+        collegeName: Admin.collegeInfo.collegeName
+
     })
 
     return res.status(200)
@@ -352,7 +354,24 @@ const DeletePyq = asyncHandler(async (req, res) => {
 })
 
 
+const getPyq = asyncHandler(async (req, res) => {
+    const userCollege = req.user?.collegeInfo.collegeName
 
+    if (!userCollege) {
+        throw new ApiError(401, "Unauthorized request")
+    }
+    const all_pyqs_of_user = await PYQ.aggregate([
+        {
+            $match: {
+                collegeName: userCollege
+            }
+        }
+    ])
+    return res.status(200).json(
+        new ApiResponse(200, all_pyqs_of_user, `Successfully fetched pyq of user ${userCollege} from mongoDb`)
+    )
+
+})
 
 
 
@@ -365,5 +384,6 @@ export {
     pyq_filter,
     refreshAccessToken,
     logoutUser,
-    DeletePyq
+    DeletePyq,
+    getPyq
 }

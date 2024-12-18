@@ -32,6 +32,10 @@ const pyqSchema = new Schema(
             type: String,
             required: true,
         },
+        collegeName: {
+            type: String,
+            required: true,
+        },
         sentByAdmin: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
