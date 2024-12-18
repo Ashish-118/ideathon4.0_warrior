@@ -392,7 +392,48 @@ const getBook = asyncHandler(async (req, res) => {
 })
 
 
+const uploadBook = asyncHandler(async (req, res) => {
+    const { forYear, forBranch, title, author } = req.body;
 
+    //  NOTE:  by default i will send forYear and forBranch as  'all'
+    if ([title, author].some((item) => item?.trim() === "")) {
+        throw new ApiError(404, "All fields are required for pyq uploader")
+    }
+    const Admin = await User.findById(req.user?._id);
+
+    const bookPdf_localPath = req.file?.path;
+
+
+    if (!bookPdf_localPath) {
+        throw new ApiError(400, " not found local path of book")
+    }
+    const bookPdfLink = await uploadOnCloudinary(bookPdf_localPath, "raw")
+
+
+    if (!bookPdfLink) {
+        throw new ApiError(400, "Error while uploading bookPdf to cloudinary")
+    }
+
+
+
+    const newBook = await Book.create({
+        forYear,
+        forBranch,
+        title,
+        author,
+        bookPdf: bookPdfLink?.url,
+        sentByAdmin: Admin._id,
+        collegeName: Admin.collegeInfo.collegeName
+
+    })
+
+    return res.status(200)
+        .json(
+            new ApiResponse(200, newBook, "successfully stored new book")
+        )
+
+
+})
 
 
 
@@ -405,5 +446,7 @@ export {
     refreshAccessToken,
     logoutUser,
     DeletePyq,
-    getPyq
+    getPyq,
+    getBook,
+    uploadBook
 }

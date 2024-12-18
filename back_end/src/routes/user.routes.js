@@ -8,8 +8,11 @@ import {
     refreshAccessToken,
     logoutUser,
     DeletePyq,
-    getPyq
+    getPyq,
+    getBook,
+    uploadBook
 } from "../controllers/user.controller.js"
+
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
@@ -53,5 +56,7 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.delete("/pyq/:pyqId", DeletePyq)
 router.route("/pyq").post(verifyJWT, getPyq)
 
+router.route('/book').post(verifyJWT, getBook)
+router.route('/book/upload').post(verifyJWT, upload.single('bookPdf'), uploadBook)
 
 export default router

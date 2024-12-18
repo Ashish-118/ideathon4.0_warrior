@@ -17,7 +17,7 @@ const bookSchema = new Schema({
         type: String
     },
     forYear: {
-        type: Number
+        type: String
     },
     bookPdf: {
         type: String,
