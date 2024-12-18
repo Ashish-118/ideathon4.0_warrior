@@ -22,6 +22,10 @@ const bookSchema = new Schema({
     bookPdf: {
         type: String,
         required: true,
+    },
+    collegeName: {
+        type: String,
+        required: true
     }
 
 }, { timestamps: true })
