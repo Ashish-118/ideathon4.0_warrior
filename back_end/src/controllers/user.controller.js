@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js"
 import { PYQ } from "../models/PYQ.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
+import { Book } from "../models/book.model.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -372,6 +373,25 @@ const getPyq = asyncHandler(async (req, res) => {
     )
 
 })
+
+
+const getBook = asyncHandler(async (req, res) => {
+    const collegeName_user = req.user?.collegeInfo.collegeName
+
+    const books = await Book.aggregate([
+        {
+            $match: {
+                collegeName: collegeName_user
+            }
+        }
+    ])
+
+    return res.status(200).json(
+        new ApiResponse(200, books, ` Successfully fetched books for college ${collegeName_user}`)
+    )
+})
+
+
 
 
 
