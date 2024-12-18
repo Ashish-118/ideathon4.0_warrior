@@ -331,6 +331,32 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 })
 
+
+
+const DeletePyq = asyncHandler(async (req, res) => {
+
+    const pyqId = req.params.pyqId.trim()
+
+    if (!pyqId) {
+        throw new ApiError(400, "PyQ ID is required")
+    }
+
+    const deletedPyq = await PYQ.findByIdAndDelete(pyqId);
+    if (!deletedPyq) {
+        throw new ApiError(404, "PyQ not found")
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, `succesfully deleted pyq of id ${pyqId}`)
+    )
+})
+
+
+
+
+
+
+
 export {
     signup_part1,
     signup_part2,
@@ -338,5 +364,6 @@ export {
     pyqUploader,
     pyq_filter,
     refreshAccessToken,
-    logoutUser
+    logoutUser,
+    DeletePyq
 }

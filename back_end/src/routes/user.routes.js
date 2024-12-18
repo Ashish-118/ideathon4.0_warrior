@@ -6,7 +6,8 @@ import {
     pyqUploader,
     pyq_filter,
     refreshAccessToken,
-    logoutUser
+    logoutUser,
+    DeletePyq
 } from "../controllers/user.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -24,7 +25,7 @@ router.route("/next/signup").post(
 )
 
 router.route("/Login").post(Login);
-router.route("/pyqUploader").post(
+router.route("/pyq/Uploader").post(
     upload.fields([
         {
             name: "paperPdf",
@@ -42,13 +43,13 @@ router.route("/pyqUploader").post(
     verifyJWT, pyqUploader
 );
 
-router.route("/filter").post(verifyJWT, pyq_filter)
+router.route("pyq/filter").post(verifyJWT, pyq_filter)
 
 router.route("/refresh-token").post(refreshAccessToken)
 
 router.route("/logout").post(verifyJWT, logoutUser);
 
-
+router.delete("/pyq/:pyqId", DeletePyq)
 
 
 
