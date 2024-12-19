@@ -435,7 +435,9 @@ const uploadBook = asyncHandler(async (req, res) => {
 
 })
 
+const getUserProfile = asyncHandler(async (req, res) => {
 
+})
 
 export {
     signup_part1,
