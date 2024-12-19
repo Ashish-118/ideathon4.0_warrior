@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import compLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (1).png"
 import { HiHome } from "react-icons/hi";
 import { HiOutlineSun } from "react-icons/hi";
-import "/Users/ashish/Documents/Warrior/front_end/src/customStyle.css/style.css"
+import "/Users/ashish/Documents/Warrior/front_end/src/customStyle/style.css"
 import { GoArrowUpRight } from "react-icons/go";
-
+import ashish from "/Users/ashish/Documents/Warrior/front_end/public/logo/Ashish (1).jpeg"
 function header() {
+
+    const [isLoggedIn, setLoggedIn] = useState(true);
     return (
-        <div class="flex bg-MenuBg items-center font-sans h-[80px] sticky top-0 z-50">
+        <div class="flex bg-MenuBg items-center font-sans h-[80px] sticky top-0 z-50 ">
             <div class="flex ">
                 < div className=" " class="ml-4  " >
                     <img src={compLogo} class="w-[50px] h-[50px]" alt="" srcset="" />
@@ -45,8 +47,22 @@ function header() {
                     </ul>
                 </div>
             </div >
+
             <div className="border" class="ml-[200px] text-xl font-bold" >
-                <button class="bg-Custompurple text-white rounded px-5  py-2 "> Login</button>
+                {
+                    (isLoggedIn) ? (
+                        <img
+                            src={ashish}
+                            class=" w-16 border-2 border-white rounded-full ml-6 mt-16 "
+                            alt="" srcset="" />
+                    )
+                        :
+                        (
+                            <button class="bg-Custompurple text-white rounded px-5  py-2 "> Login</button>
+                        )
+
+                }
+
             </div>
         </div >
     )

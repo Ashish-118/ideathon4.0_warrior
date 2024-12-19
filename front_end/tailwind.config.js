@@ -10,7 +10,11 @@ export default {
         MenuBg: '#dddddd',
         Custompurple: '#801aa4',
         bodyBg: '#ededed',
-        menuItem: '#797979'
+        menuItem: '#797979',
+        Login: '#8f8f8f'
+      },
+      fontFamily: {
+        baloo: ['"Baloo 2"', 'cursive'],
       },
     },
   },

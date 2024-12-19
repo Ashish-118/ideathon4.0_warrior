@@ -1,13 +1,39 @@
 import React from "react";
-import Header from '../components/header/header.jsx'
-import Footer from "../components/footer.jsx";
+import "../customStyle/style.css";
+import compLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (2).png"
+
 function Login() {
     return (
-        <div>
-            <Header />
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum soluta deserunt, deleniti repellendus sed similique maxime vero nam illo aliquid molestias veritatis ad officiis facere, rerum enim aperiam. Quos accusamus, iure dolores error debitis ipsum magnam! Atque fugiat nemo quia. Unde esse ipsam, ipsa a odit commodi obcaecati, dolorum blanditiis voluptatem et nostrum sint enim? Iste, voluptatem, temporibus obcaecati repellendus asperiores velit hic amet ut voluptates dolorem expedita eos, id sint soluta facere perspiciatis iure praesentium tempora unde in molestias beatae labore incidunt? Voluptates quibusdam fugiat repudiandae, incidunt, doloribus dignissimos minima architecto reiciendis magni repellendus alias ea eius. Nam saepe beatae maiores facilis. Blanditiis delectus ipsam sunt voluptate incidunt temporibus dolore rem quasi ullam eos, eveniet laborum nostrum vel autem porro voluptas nulla veniam facilis in neque id. Tenetur consequuntur fuga, deleniti inventore ipsa id! Architecto incidunt commodi quisquam minima odit dolores ex ipsa, debitis adipisci dolorum fuga nostrum ut. Consequuntur, sit officiis odio quod eius quidem doloribus voluptates nisi esse quae, quos minus pariatur, alias exercitationem doloremque? Illum corporis enim ullam, voluptatem assumenda nostrum qui commodi nulla ab obcaecati accusantium. Doloremque enim deserunt aut eum voluptatum quas, commodi id quibusdam ut possimus optio nam placeat cum sed dolore! Alias voluptatum corporis tenetur tempora asperiores quam explicabo possimus, eaque quibusdam iste autem placeat in voluptates earum harum? Blanditiis alias eos totam provident, animi eum earum ullam id facere error magnam sint voluptatibus fugit, excepturi illum quis neque, quia ut? Consequatur eum expedita temporibus eius distinctio repellendus praesentium quaerat sint asperiores quae enim adipisci corrupti magnam, a velit est at eaque ad aspernatur necessitatibus ratione aperiam voluptatibus odio facilis. Minus cupiditate quae labore ipsam id nemo laboriosam consectetur, magnam atque reiciendis impedit exercitationem natus corporis quos magni, vero quisquam facere enim. Esse a incidunt molestiae qui harum! Neque ab nostrum expedita a sapiente, magnam praesentium possimus, quisquam nihil rem vitae nam. Sint odio placeat aliquam. In eius, nemo consequuntur laborum quaerat ea veniam aliquid cumque est voluptate quibusdam at labore facilis corrupti doloribus quod pariatur perspiciatis culpa sapiente assumenda aliquam sit repudiandae nisi. Alias corporis earum excepturi assumenda quos nostrum deleniti rem vel deserunt officia. Neque, quae ad iste iure voluptatem eaque itaque illum quasi asperiores magni doloremque dolor veritatis sapiente tenetur, soluta provident! Excepturi cum recusandae, laudantium a distinctio suscipit facilis perspiciatis dolorum id quaerat saepe veniam magnam? Autem fugiat dolorem doloribus quidem obcaecati quam reiciendis, doloremque quae rerum. Quis asperiores, voluptatum et atque eveniet temporibus qui aperiam, cum blanditiis aspernatur nemo corporis veniam est exercitationem repellat quaerat ipsa delectus hic ipsum? Reiciendis voluptatibus alias praesentium laudantium distinctio autem dolores delectus facere culpa aliquid error placeat aut eveniet inventore assumenda facilis necessitatibus optio neque consequatur, molestias deleniti, voluptate quod. Quisquam in numquam soluta natus doloremque perferendis doloribus, unde commodi dolore repudiandae illum reprehenderit voluptate facere odit labore ratione, sed accusamus! A natus, nam rem quae, doloribus itaque sapiente totam vitae vero perspiciatis atque tempore officiis adipisci officia ab qui alias obcaecati sequi id, facilis voluptate quo aut architecto. Consequuntur ipsa amet cupiditate? Nobis voluptatum magni rerum temporibus. Pariatur provident tenetur aspernatur libero itaque, sequi labore perspiciatis mollitia asperiores quaerat reiciendis doloremque odit reprehenderit cum aut repellat illo corrupti. Repellat doloremque obcaecati dolores neque eum nemo accusantium, sed maxime eaque hic ratione quia aliquid corrupti tempora quasi consectetur similique distinctio quaerat eius, impedit minima ad dolore alias unde. Facere perferendis excepturi corporis fugiat eaque labore voluptatem ut sed. Enim aspernatur quis adipisci, sequi, ex quas officiis debitis hic dignissimos, repudiandae accusamus iusto. Voluptates aut saepe nisi sunt ad? Laborum officiis incidunt fuga, nihil voluptate repellat qui velit exercitationem error tempore, quas saepe iste inventore fugiat nam eius? Maxime mollitia dolor earum eveniet eum. Nam aspernatur ratione praesentium dolorem beatae dicta, temporibus eligendi. Accusamus dignissimos, eaque quam ut laborum commodi, obcaecati illo facere, autem a molestiae cumque eius ratione delectus rerum ea. Incidunt autem vel fugiat quae sed expedita officiis odio ipsa sunt facere laborum voluptatibus, doloremque quidem natus mollitia placeat voluptatem error neque veritatis soluta asperiores est? Voluptatibus et voluptates veniam odio dolore dolorem id ducimus facilis, repudiandae quod nemo alias esse quam itaque sint quo corrupti, natus tempore similique perferendis error. Unde aut, voluptas laborum recusandae repellendus nihil distinctio architecto voluptate culpa sed, nulla natus tempore. Fugit accusantium impedit exercitationem iusto distinctio ipsam animi fuga incidunt molestias sit libero voluptate ea saepe error modi accusamus laboriosam, eligendi non delectus dignissimos fugiat deleniti! Voluptatibus aliquam magni vel. Eum, recusandae rerum vero beatae, atque ipsa, laudantium est voluptate voluptas quod provident maiores assumenda hic illum! Reprehenderit aliquid perspiciatis explicabo minima harum adipisci unde hic, aliquam animi? Amet reprehenderit dignissimos voluptatibus unde neque consequuntur, ullam earum magni quia. Doloribus eligendi asperiores enim voluptas eos vel voluptatem sint fuga labore, suscipit nisi consequatur repellendus earum cum consequuntur molestiae qui nam! Saepe consequatur nam itaque dicta sapiente ea. Ipsam suscipit obcaecati, itaque facilis iusto repudiandae quasi velit sed temporibus tenetur nostrum incidunt vel dolore? Architecto deleniti dicta facilis excepturi, iure tempore necessitatibus iste maxime esse tempora. Quos ipsum ullam qui in itaque asperiores delectus dolorem, est quae ducimus natus quisquam! Enim, laudantium accusantium aut nulla vitae, maiores distinctio quam delectus consequuntur, quas sequi veniam quia. Culpa distinctio fugit deleniti sapiente saepe beatae delectus. Sunt officiis laudantium tempore aspernatur, facilis quidem autem ex recusandae id, molestiae fuga quod impedit, sapiente velit quasi molestias. Aspernatur deserunt, magnam ratione, quod deleniti necessitatibus, voluptatem sit doloribus odio quia veritatis?</p>
-            <Footer />
-        </div>
+        <div class="flex h-screen">
+
+            <div class=" h-full w-[28%] bg-white place-content-center ">
+                <h1 class="text-Login text-3xl font-bold  text-center">Login</h1>
+                <form class="my-4 flex flex-col place-content-center ">
+                    <input
+                        type="text"
+                        placeholder="username"
+                        class=" bg-bodyBg  rounded-lg text-center m-2 h-[50px]  focus:border-Custompurple" />
+
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        class=" bg-bodyBg  rounded-lg text-center m-2 h-[50px]  focus:border-Custompurple" />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        class=" bg-bodyBg  rounded-lg text-center m-2 h-[50px]  focus:border-Custompurple" />
+                    <button
+                        class=" bg-Custompurple text-white  rounded-lg text-center m-2 h-[50px]  focus:border-Custompurple text-2xl font-bold font-baloo hover:bg-purple-700"
+                        type="submit">Login
+                    </button>
+                </form>
+            </div>
+
+            <div class=" h-full w-[72%] bg-bodyBg   flex justify-center items-center">
+                <img src={compLogo} class="max-w-full max-h-full w-[150px] " alt="" />
+            </div>
+
+        </div >
 
 
 

@@ -1,0 +1,13 @@
+.menuItem {
+    @apply mx-5 flex items-center
+}
+
+.Border {
+    @apply border-solid border-2 border-red-500
+}
+
+html,
+body {
+    @apply overscroll-none;
+    /* Apply the class globally */
+}
