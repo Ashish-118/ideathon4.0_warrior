@@ -119,7 +119,7 @@ const Login = asyncHandler(async (req, res) => {
     if ([username, email, password].some((item) => item?.trim() === "")) {
         throw new ApiError(400, "All fields are required for Loing")
     }
-
+    console.log(username, email, password)
     const user = await User.findOne(
         {
             $and: [{ username }, { email }]

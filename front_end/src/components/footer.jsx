@@ -1,5 +1,6 @@
 import React from "react";
 import { HiHome } from "react-icons/hi";
+import { Link } from 'react-router-dom';
 import companyLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (2).png"
 
 function footer() {
@@ -7,7 +8,7 @@ function footer() {
         <footer class="bg-white rounded-lg  dark:bg-gray-900  w-full shadow-xl ">
             <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
                 <div class="sm:flex sm:items-center sm:justify-between">
-                    <a href="" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                    <a href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
                         <img src={companyLogo} class="h-12" alt="Q&A" />
                         <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Have Doubt?</span>
                     </a>
