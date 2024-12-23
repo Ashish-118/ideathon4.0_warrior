@@ -3,7 +3,7 @@ import "../customStyle/style.css";
 import compLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (2).png"
 import axios from "axios"
 import Home from '../pages/home.jsx';
-import { Link } from 'react-router-dom';
+import useUser from "../context/user.jsx";
 import { useNavigate } from "react-router-dom";
 import { LoginApi } from "../ApiCalls/api.js";
 function Login() {
@@ -15,26 +15,41 @@ function Login() {
     const [message, setMessage] = useState("")
 
 
+    const { setUser } = useUser();
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
+            // Make API call using Axios
+            const response = await axios.post("http://localhost:8000/api/v1/users/Login", {
+                username,
+                email,
+                password,
+            });
+            console.log(response)
+            if (response.status === 200) {
+                const token = response.data.data.accessToken;
+                ;
+                console.log(response.data)
+                console.log("Login successful, token:", token);
+                setUser(response.data)
+                // Store token in localStorage
+                localStorage.setItem("token", token);
 
-            const response = await LoginApi(username, email, password)
-            if (response.statusCode === 200) {
-                console.log(response.data.token)
-                LocalStorage.set('token', response.data.token);
+                // Navigate to the home page
                 navigate("/");
             }
-            // LocalStorage.setItem('token', response.token);
+        } catch (error) {
+            console.error("Error during login:", error);
 
+            // Handle specific error messages
+            if (error.response) {
+                setMessage(error.response.data.message || "Login failed. Please try again.");
+            } else {
+                setMessage("An unexpected error occurred. Please check your network.");
+            }
         }
-        catch (error) {
-            console.log("Ashis this a error : " + error)
-            // setMessage(error.response.data.message)
-        }
-
     };
-
 
     return (
         <div className="flex h-screen">

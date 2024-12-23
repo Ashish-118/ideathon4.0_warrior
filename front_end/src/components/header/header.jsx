@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import compLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (1).png"
 import { HiHome } from "react-icons/hi";
 import { HiOutlineSun } from "react-icons/hi";
@@ -6,26 +6,34 @@ import "/Users/ashish/Documents/Warrior/front_end/src/customStyle/style.css"
 import { GoArrowUpRight } from "react-icons/go";
 import { Link, NavLink } from 'react-router-dom';
 import ashish from "/Users/ashish/Documents/Warrior/front_end/public/logo/Ashish (1).jpeg"
+import useUser from "../../context/user.jsx";
 function header() {
 
     const [isLoggedIn, setLoggedIn] = useState(false);
+    const { user } = useUser();
+
+
+    useEffect(() => {
+        if (user && user?.statusCode == 200) setLoggedIn(true)
+        // console.log(user?.data?.user?.username)
+    }, [user])
     return (
-        <div class="flex bg-MenuBg items-center font-sans h-[75px] sticky top-0 z-50 ">
-            <div class="flex ">
-                < div className=" " class="ml-4 mt-2 " >
-                    <img src={compLogo} class="w-[50px] h-[50px]" alt="" srcset="" />
+        <div className="flex bg-MenuBg items-center font-sans h-[75px] sticky top-0 z-50 ">
+            <div className="flex ">
+                < div className="ml-4 mt-2 " >
+                    <img src={compLogo} className="w-[50px] h-[50px]" alt="" />
                 </div >
                 <div className=" ml-[450px] w-[600px] place-content-center mt-6" >
-                    <ul class="flex text-menuItem ">
+                    <ul className="flex text-menuItem ">
                         <li className="menuItem ">
                             <NavLink
                                 to="/"
                                 className={({ isActive }) =>
-                                    // isActive ? "text-white bg-gray-600 rounded-[50px] px-1 py-2.5" : "default"
-                                    `  h-[40px] w-[40px]  items-center flex px-2 rounded-full ${isActive ? "text-white bg-gray-600   " : "hover:bg-gray-400 hover:text-white    "}`
+
+                                    `  h-[40px] w-[40px] cursor-default items-center flex px-2 rounded-full ${isActive ? "text-white bg-gray-600   " : "hover:bg-gray-400 hover:text-white    "}`
                                 }
                             >
-                                <HiHome class="w-8 h-5 " />
+                                <HiHome className="w-8 h-5 " />
                             </NavLink>
 
                         </li>
@@ -34,12 +42,12 @@ function header() {
                             <NavLink
                                 to="/pyq"
                                 className={({ isActive }) =>
-                                    `  h-[40px] w-[80px]  items-center flex px-2 rounded-lg ${isActive ? "text-white bg-gray-600 rounded-lg   " : "hover:bg-gray-400 hover:text-white    "}`
-                                    // isActive ? "text-white bg-gray-600 rounded-lg px-3 py-1.5 flex" : "default flex"
+                                    `  h-[40px] w-[80px] cursor-default items-center flex px-2 rounded-lg ${isActive ? "text-white bg-gray-600 rounded-lg   " : "hover:bg-gray-400 hover:text-white    "}`
+
                                 }
                             >
                                 PYQ's
-                                <GoArrowUpRight class="mt-1 " />
+                                <GoArrowUpRight className="mt-1 " />
                             </NavLink>
 
 
@@ -52,12 +60,12 @@ function header() {
                             <NavLink
                                 to="/book"
                                 className={({ isActive }) =>
-                                    // isActive ? "text-white bg-gray-600 rounded-lg px-3 py-1.5 flex" : "default flex"
-                                    `  h-[40px] w-[90px]  items-center flex px-2 rounded-lg ${isActive ? "text-white bg-gray-600 rounded-lg   " : "hover:bg-gray-400 hover:text-white    "}`
+
+                                    `  h-[40px] w-[90px] cursor-default items-center flex px-2 rounded-lg ${isActive ? "text-white bg-gray-600 rounded-lg   " : "hover:bg-gray-400 hover:text-white    "}`
                                 }
                             >
                                 Book's
-                                <GoArrowUpRight class="mt-1" />
+                                <GoArrowUpRight className="mt-1" />
                             </NavLink>
                         </li>
 
@@ -67,12 +75,12 @@ function header() {
                             <NavLink
                                 to="/about"
                                 className={({ isActive }) =>
-                                    // isActive ? "text-white bg-gray-600 rounded-lg px-3 py-1.5 flex" : "default flex"
-                                    `  h-[40px] w-[100px]  items-center flex px-2 rounded-lg ${isActive ? "text-white bg-gray-600 rounded-lg   " : "hover:bg-gray-400 hover:text-white    "}`
+
+                                    `  h-[40px] w-[100px] cursor-default items-center flex px-2 rounded-lg ${isActive ? "text-white bg-gray-600 rounded-lg   " : "hover:bg-gray-400 hover:text-white    "}`
                                 }
                             >
                                 About us
-                                <GoArrowUpRight class="mt-1" />
+                                <GoArrowUpRight className="mt-1" />
                             </NavLink>
                         </li>
 
@@ -80,11 +88,11 @@ function header() {
                             <NavLink
                                 to="/sun"
                                 className={({ isActive }) =>
-                                    // isActive ? "text-white bg-gray-600 rounded-lg px-3 py-1.5 flex" : "default flex"
-                                    `  h-[40px] w-[40px]  items-center flex px-2 rounded-full ${isActive ? "text-white bg-gray-600 rounded-full  " : "hover:bg-gray-400 hover:text-white    "}`
+
+                                    `  h-[40px] w-[40px] cursor-default items-center flex px-2 rounded-full ${isActive ? "text-white bg-gray-600 rounded-full  " : "hover:bg-gray-400 hover:text-white    "}`
                                 }
                             >
-                                <HiOutlineSun class="w-8 h-6" />
+                                <HiOutlineSun className="w-8 h-6" />
                             </NavLink>
 
                         </li>
@@ -92,20 +100,22 @@ function header() {
                 </div>
             </div >
 
-            <div className="border" class="ml-[200px] text-xl font-bold" >
+            <div className="ml-[200px] text-xl font-bold flex" >
+                {/* <h1 className="border">{user?.data?.user?.username || "hello"} </h1> */}
                 {
                     (isLoggedIn) ? (
 
                         <NavLink
                             to="/profile"
                             className={({ isActive }) =>
-                                isActive ? "text-white bg-gray-600 rounded-lg px-3 py-1.5 flex" : "default flex"
+                                `cursor-default ${isActive ? "text-black bg-gray-600 rounded-lg px-3 py-1.5 flex" : "default flex"}`
                             }
                         >
+
                             <img
-                                src={ashish}
-                                class=" w-16 border-2 border-white rounded-full ml-6 mt-16 "
-                                alt="" srcset="" />
+                                src={user?.data?.user?.avatar || ashish}
+                                className=" w-16 h-16 border-2 border-white rounded-full ml-6 mt-16 object-cover "
+                                alt="" />
                         </NavLink>
 
                     )
