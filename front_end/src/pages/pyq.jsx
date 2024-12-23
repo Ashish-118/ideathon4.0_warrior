@@ -2,8 +2,10 @@ import React from 'react';
 import FilterPyq from '../components/filterPyq';
 import Fixed from '../components/FixedDoubtRoom';
 import { HiChevronRight } from "react-icons/hi";
+import useUser from "../context/user";
 
 function pyq() {
+    const { user } = useUser();
     return (
         <>
             <div className="relative flex flex-col min-h-screen">
@@ -33,7 +35,8 @@ function pyq() {
                 </div>
 
 
-                <Fixed />
+                {/* <Fixed /> */}
+                {user?.statusCode === 200 && user?.success && <Fixed />}
             </div>
         </>
     );
