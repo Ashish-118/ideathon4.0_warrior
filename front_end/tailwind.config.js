@@ -10,6 +10,7 @@ export default {
         MenuBg: '#dddddd',
         Custompurple: '#801aa4',
         bodyBg: '#ededed',
+        filterBG: '#dddddd',
         menuItem: '#797979',
         Login: '#8f8f8f'
       },

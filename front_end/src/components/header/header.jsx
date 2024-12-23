@@ -18,7 +18,7 @@ function header() {
         // console.log(user?.data?.user?.username)
     }, [user])
     return (
-        <div className="flex bg-MenuBg items-center font-sans h-[75px] sticky top-0 z-50 ">
+        <div className="flex shadow-xl bg-MenuBg items-center font-sans h-[75px] sticky top-0 z-50 ">
             <div className="flex ">
                 < div className="ml-4 mt-2 " >
                     <img src={compLogo} className="w-[50px] h-[50px]" alt="" />
