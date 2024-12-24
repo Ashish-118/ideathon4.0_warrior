@@ -13,16 +13,16 @@ function Room() {
                     <h1 className="text-white font-baloo text-center text-2xl mt-3">Doubt room</h1>
                     <hr className="mt-1" />
                 </div>
-                <div className="Border text-gray-400 flex ">
+                <div className=" text-gray-400 flex ">
                     <h3 className="">Online</h3>
                 </div>
                 <div className="w-[350px] h-[475px]  ">
 
                 </div>
                 <div className="flex ">
-                    <HiPaperClip className="text-white rounded-l  items-center bg-menuItem w-[30px] h-[50px] hover:text-gray-200" />
-                    <input type="text" placeholder="Ask Question  " className="w-[280px] h-[50px] rounded-r text-center outline-none " />
-                    <HiMiniRocketLaunch className="text-white w-[30px] h-[50px] hover:text-red-400" />
+                    <HiPaperClip className="text-white rounded-l ml-1 items-center bg-menuItem w-[30px] h-[40px] hover:text-gray-200" />
+                    <input type="text" placeholder="Ask Question  " className="w-[280px] h-[40px] rounded-r text-center outline-none " />
+                    <HiMiniRocketLaunch className="text-white w-[25px] h-[40px]  ml-2.5 hover:text-red-400" />
 
                 </div>
             </div>
