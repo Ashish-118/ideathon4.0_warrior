@@ -2,10 +2,11 @@ import React from "react";
 import { HiHome } from "react-icons/hi";
 import { Link } from 'react-router-dom';
 import companyLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (2).png"
+import { HiOutlineArrowCircleRight } from "react-icons/hi";
 
 function footer() {
     return (
-        <footer class="bg-white rounded-lg  dark:bg-gray-900  w-full shadow-xl ">
+        <footer class="bg-white rounded-lg  dark:bg-gray-900  w-full shadow-xl "  >
             <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
                 <div class="sm:flex sm:items-center sm:justify-between">
                     <a href="/" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
@@ -32,7 +33,7 @@ function footer() {
                 <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
                 <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a href="" class="hover:underline">Q&A</a>. All Rights Reserved.</span>
             </div>
-        </footer>
+        </ footer>
 
 
     )
