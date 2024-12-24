@@ -10,8 +10,12 @@ const chatSchema = new Schema({
         type: String,
         required: true
     },
-    andAttachment: {
+    ansAttachment: {
         type: String,
+    },
+    room: {
+        type: String,
+        required: true,
     }
 }, { timestamps: true })
 
