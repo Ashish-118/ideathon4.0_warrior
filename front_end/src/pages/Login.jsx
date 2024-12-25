@@ -6,6 +6,8 @@ import Home from '../pages/home.jsx';
 import useUser from "../context/user.jsx";
 import { useNavigate } from "react-router-dom";
 import { LoginApi } from "../ApiCalls/api.js";
+import { IoLockClosed } from "react-icons/io5";
+import { IoLockOpen } from "react-icons/io5";
 function Login() {
     const navigate = useNavigate();
 
@@ -13,7 +15,7 @@ function Login() {
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")
     const [message, setMessage] = useState("")
-
+    const [OpenLock, setOpenLock] = useState(false)
 
     const { setUser } = useUser();
 
@@ -35,9 +37,12 @@ function Login() {
                 setUser(response.data)
                 // Store token in localStorage
                 localStorage.setItem("token", token);
-
+                setOpenLock(true)
                 // Navigate to the home page
-                navigate("/");
+                setTimeout(() => {
+
+                    navigate("/");
+                }, 2500)
             }
         } catch (error) {
             console.error("Error during login:", error);
@@ -55,7 +60,15 @@ function Login() {
         <div className="flex h-screen">
 
             <div className=" h-full w-[28%] bg-white place-content-center ">
-                <h1 className="text-Login text-3xl font-bold  text-center">Login</h1>
+                <div>
+                    <div >
+                        {
+                            OpenLock ? <IoLockOpen className="w-[30px] h-[30px] text-gray-700 mb-5 ml-[190px]" /> : <IoLockClosed className="w-[30px] h-[30px] text-gray-700 mb-5 ml-[190px]" />
+                        }
+                    </div>
+
+                    <h1 className="text-Login text-3xl font-bold  text-center">Login</h1>
+                </div>
                 <form className="my-4 flex flex-col place-content-center ">
                     <input
                         type="text"
