@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginApi } from "../ApiCalls/api.js";
 import { IoLockClosed } from "react-icons/io5";
 import { IoLockOpen } from "react-icons/io5";
+import { account } from "../utils/appwrite.js"
 function Login() {
     const navigate = useNavigate();
 
@@ -22,12 +23,20 @@ function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
+            // account.createOAuth2Session(
+            //     'google',
+            //     'http://localhost:5173/',
+            //     'http://localhost:5173/fail'
+            // )
+            // const user = await account.get();
+            // console.log(user)
             // Make API call using Axios
             const response = await axios.post("http://localhost:8000/api/v1/users/Login", {
                 username,
                 email,
                 password,
             });
+
             console.log(response)
             if (response.status === 200) {
                 const token = response.data.data.accessToken;
@@ -60,10 +69,10 @@ function Login() {
         <div className="flex h-screen">
 
             <div className=" h-full w-[28%] bg-white place-content-center ">
-                <div>
+                <div className=" flex flex-col items-center">
                     <div >
                         {
-                            OpenLock ? <IoLockOpen className="w-[30px] h-[30px] text-gray-700 mb-5 ml-[190px]" /> : <IoLockClosed className="w-[30px] h-[30px] text-gray-700 mb-5 ml-[190px]" />
+                            OpenLock ? <IoLockOpen className="w-[30px] h-[30px] mb-3 text-gray-700" /> : <IoLockClosed className="w-[30px] h-[30px] mb-3 text-gray-700 " />
                         }
                     </div>
 

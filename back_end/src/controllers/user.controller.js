@@ -27,7 +27,11 @@ const signup_part1 = asyncHandler(async (req, res) => {
     if ([fullName, email, password, username, role].some((field) => field?.trim() === "")) {
         throw new ApiError(404, "All fields are required")
     }
+    const eduInRegex = /^[^\s@]+@[^\s@]+\.edu\.in$/;
 
+    if (!eduInRegex.test(email)) {
+        throw new ApiError(400, "Invalid email address")
+    }
     const existedUser = await User.findOne(
         {
             $or: [{ username }, { email }]
@@ -43,7 +47,7 @@ const signup_part1 = asyncHandler(async (req, res) => {
         fullName,
         email,
         password,
-        isAdmin: (role === "faculty")
+        isAdmin: (role === "admin")
     })
 
     // now removing password and refreshToken  to send as response  , this will not remove  password and refreshToken from the database
