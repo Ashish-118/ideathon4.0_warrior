@@ -10,6 +10,8 @@ import About from './pages/About.jsx'
 import Book from './pages/book.jsx'
 import Login from './pages/Login.jsx'
 import { UserProvider } from './context/user.jsx'
+import Signup from './pages/signup.jsx'
+import { Signup1Provider } from "./context/signup1.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,13 +25,17 @@ const router = createBrowserRouter(
 
       </Route>
       <Route path='/Login' element={<Login />} />
+      <Route path='signup' element={<Signup />} />
     </>
   )
 )
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserProvider>
-      <RouterProvider router={router} />
+      <Signup1Provider>
+
+        <RouterProvider router={router} />
+      </Signup1Provider>
     </UserProvider>
   </StrictMode>,
 )

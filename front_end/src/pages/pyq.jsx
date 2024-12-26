@@ -20,7 +20,7 @@ function pyq() {
 
                     <div className="relative left-[50px] w-[1000px] mt-[50px] ">
                         <div
-                            className="flex items-center sticky top-[75px] bg-bodyBg z-40  ">
+                            className="flex items-center sticky top-[75px] bg-white  z-40  ">
                             <h1 className="font-baloo  text-menuItem text-xl px-2 py-2 ">
                                 Previous Year Questions
                             </h1>

@@ -15,7 +15,7 @@ function home() {
 
             <Fixed />
 
-            {/* {user?.statusCode === 200 && user?.success && <Fixed />} */}
+
 
 
         </>
