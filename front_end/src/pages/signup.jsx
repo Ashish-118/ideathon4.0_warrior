@@ -9,19 +9,42 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 
+
 export default function Signup() {
     const [fullName, setfullName] = useState("");
     const [username, setusername] = useState("");
     const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
     const [role, setRole] = useState("");
+    const [emailError, setemailError] = useState(false)
+    const [CredentialsError, setCredentialsError] = useState(false)
+    const [accountExistError, setaccountExistError] = useState(false)
 
     const { setSignup1 } = useSignup1();
 
     const handleSignup1 = async (e) => {
         e.preventDefault();
         console.log(fullName, username, email, password, role)
+        const eduInRegex = /^[^\s@]+@[^\s@]+\.edu\.in$/;
+
+
         try {
+
+            if (fullName === "" || username === "" || password === "" || role === "" || email === "") {
+                setCredentialsError(true)
+                setTimeout(() => {
+                    setCredentialsError(false)
+                }, 5000)
+                return;
+            }
+            if (!eduInRegex.test(email)) {
+                setemailError(true)
+                setTimeout(() => {
+                    setemailError(false)
+                }, 5000)
+                return;
+            }
+
             const response = await axios.post("http://localhost:8000/api/v1/users/next", {
                 username,
                 fullName,
@@ -29,31 +52,34 @@ export default function Signup() {
                 password,
                 role
             })
-            console.log(response)
-            // if (response.status === 200) {
-            //     const token = response.data.data.accessToken;
+            // console.log(response)
+            if (response.status === 201) {
+                const token = response?.data?.data?.accessToken;
 
-            //     console.log(response.data)
-            //     console.log("Login successful, token:", token);
-            //     setSignup1(response.data)
-            //     // Store token in localStorage
-            //     localStorage.setItem("token", token);
-            //     setOpenLock(true)
-            //     // Navigate to the home page
-            //     setTimeout(() => {
+                console.log(response.data)
+                console.log("Login successful, token:", token);
+                setSignup1(response?.data)
+                // Store token in localStorage
+                localStorage.setItem("token", token);
 
-            //         navigate("/");
-            //     }, 2500)
-            // }
+                // Navigate to the home page
+                setTimeout(() => {
+
+                    navigate("/");
+                }, 2500)
+            }
         }
         catch (error) {
-            console.error("Error during login:", error);
+            if (error.status === 409) {
+                setaccountExistError(true)
+                setTimeout(() => {
+                    setaccountExistError(false)
+                }, 6000)
+            }
+            console.error("Error during signup:", error);
 
-            // Handle specific error messages
             if (error.response) {
-                setMessage(error.response.data.message || "Login failed. Please try again.");
-            } else {
-                setMessage("An unexpected error occurred. Please check your network.");
+                console.error(error.response.data.message || "part 1 of singup failed. Please try again.");
             }
         }
     }
@@ -63,12 +89,16 @@ export default function Signup() {
         <>
             <div className="modal-overlay flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
                 <div className="modal">
-                    <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                    <div className="sm:mx-auto flex flex-col items-center sm:w-full sm:max-w-sm">
                         <img
                             alt="Your Company"
                             src={compLogo}
                             className="mx-auto h-10 w-auto"
                         />
+                        {
+                            CredentialsError && <h4 className="text-red-600 text-center">All fields are required !!!</h4>
+                        }
+
                         <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
                             Sign up
                         </h2>
@@ -112,6 +142,7 @@ export default function Signup() {
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-900">
                                     Email address
+                                    <span className="text-red-500 ml-[80px]">{emailError && "Format should be .edu.in"}</span>
                                 </label>
                                 <div className="mt-2">
                                     <input
@@ -147,7 +178,7 @@ export default function Signup() {
                                 </div>
                             </div>
                             <Menu as="div" className="relative inline-block text-left">
-                                <div>
+                                <div className="flex ">
                                     <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
 
                                     >
@@ -155,6 +186,10 @@ export default function Signup() {
                                         {role === "" ? "Role" : role}
                                         <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
                                     </MenuButton>
+
+                                    <div>
+                                        {accountExistError && <h4 className="text-red-600 text-center">Acount exists already !!!</h4>}
+                                    </div>
                                 </div>
 
                                 <MenuItems
@@ -165,7 +200,10 @@ export default function Signup() {
                                         <MenuItem>
                                             {({ active }) => (
                                                 <button
-                                                    onClick={() => { setRole('admin') }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault()
+                                                        setRole('admin')
+                                                    }}
                                                     className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                         } w-full text-left block px-4 py-2 text-sm`}
                                                 >
@@ -176,7 +214,10 @@ export default function Signup() {
                                         <MenuItem>
                                             {({ active }) => (
                                                 <button
-                                                    onClick={() => { setRole('student') }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault()
+                                                        setRole('student')
+                                                    }}
                                                     className={`${active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                         } w-full text-left block px-4 py-2 text-sm`}
                                                 >
