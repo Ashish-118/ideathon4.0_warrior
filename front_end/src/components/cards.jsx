@@ -1,5 +1,5 @@
 import React from "react";
-import ashish from "../../public/logo/Ashish (1).jpeg";
+import ashish from "../assets/logo/Ashish (1).jpeg";
 function Card({ forYear, CourseCode, paperYear, title, data }) {
     return (
         <div className=" w-[250px] h-[350px] rounded-xl shadow-2xl bg-white">

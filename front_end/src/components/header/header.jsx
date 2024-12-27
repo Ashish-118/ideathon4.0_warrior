@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import compLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (1).png"
+import compLogo from "../../assets/logo/qa (1).png"
 import { HiHome } from "react-icons/hi";
 import { HiOutlineSun } from "react-icons/hi";
 import "/Users/ashish/Documents/Warrior/front_end/src/customStyle/style.css"
 import { GoArrowUpRight } from "react-icons/go";
 import { Link, NavLink } from 'react-router-dom';
-import ashish from "/Users/ashish/Documents/Warrior/front_end/public/logo/Ashish (1).jpeg"
+
 import useUser from "../../context/user.jsx";
 function header() {
 
@@ -113,7 +113,7 @@ function header() {
                         >
 
                             <img
-                                src={user?.data?.user?.avatar || ashish}
+                                src={user?.data?.user?.avatar}
                                 className=" w-16 h-16 border-2 border-white rounded-full ml-6 mt-16 object-cover "
                                 alt="" />
                         </NavLink>

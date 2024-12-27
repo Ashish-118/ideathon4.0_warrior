@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../customStyle/style.css";
-import compLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (2).png"
+import compLogo from "../assets//logo/qa (2).png"
 import axios from "axios"
 import Home from '../pages/home.jsx';
 import useUser from "../context/user.jsx";
@@ -47,7 +47,7 @@ function Login() {
                 }, 2500)
             }
         } catch (error) {
-            console.error("Error during login:", error);
+            console.error("Error during login:", error.message);
 
             // Handle specific error messages
             if (error.response) {

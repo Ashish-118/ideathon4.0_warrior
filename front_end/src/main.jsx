@@ -10,8 +10,9 @@ import About from './pages/About.jsx'
 import Book from './pages/book.jsx'
 import Login from './pages/Login.jsx'
 import { UserProvider } from './context/user.jsx'
-import Signup from './pages/signup.jsx'
+
 import { Signup1Provider } from "./context/signup1.jsx";
+import { Signup2Provider } from "./context/signup2.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,11 +22,11 @@ const router = createBrowserRouter(
         <Route path='about' element={<About />} />
         <Route path='pyq' element={<Pyq />} />
         <Route path='book' element={<Book />} />
-        {/* <Route path='profile' element={<Profile />} /> */}
+
 
       </Route>
       <Route path='/Login' element={<Login />} />
-      <Route path='signup' element={<Signup />} />
+
     </>
   )
 )
@@ -33,8 +34,10 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserProvider>
       <Signup1Provider>
+        <Signup2Provider>
 
-        <RouterProvider router={router} />
+          <RouterProvider router={router} />
+        </Signup2Provider>
       </Signup1Provider>
     </UserProvider>
   </StrictMode>,

@@ -76,18 +76,18 @@ const signup_part2 = asyncHandler(async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user || user.profileComplete) {
-        throw new ApiError(400, "Invalid or already verified user");
+        throw new ApiError(391, "Invalid or already verified user");
     }
 
     if (!(/^\d{10}$/.test(mobile_no))) {
-        throw new ApiError(400, "Invalid mobile number");
+        throw new ApiError(392, "Invalid mobile number");
     }
 
     if (!collegeInfo?.collegeName) {
-        throw new ApiError(400, "Complete college information is required");
+        throw new ApiError(394, "Complete college information is required");
     }
     if (((!user.isAdmin) && (!collegeInfo?.yearOfStudy || !collegeInfo?.branch)) || (user.isAdmin && !collegeInfo?.facultyOf)) {
-        throw new ApiError(400, "Complete college information is required");
+        throw new ApiError(394, "Complete college information is required");
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
@@ -134,10 +134,12 @@ const Login = asyncHandler(async (req, res) => {
         throw new ApiError(401, "User not found")
     }
 
-    if (!user.profileComplete) {
-        throw new ApiError(400, "You have not completed  the full step of  signup")
+    // if (!user.profileComplete) {
+    //     throw new ApiError(402, "You have not completed  the full step of  signup")
 
-    }
+    // }
+
+
     const isPasswordCorrect = await user.isPasswordCorrect(password);
     if (!isPasswordCorrect) {
         throw new ApiError(401, "Invalid password")

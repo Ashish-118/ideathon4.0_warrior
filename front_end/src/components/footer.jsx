@@ -1,7 +1,7 @@
 import React from "react";
 import { HiHome } from "react-icons/hi";
 import { Link } from 'react-router-dom';
-import companyLogo from "/Users/ashish/Documents/Warrior/front_end/public/logo/qa (2).png"
+import companyLogo from "../assets/logo/qa (2).png"
 import { HiOutlineArrowCircleRight } from "react-icons/hi";
 
 function footer() {

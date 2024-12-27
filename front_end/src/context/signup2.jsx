@@ -7,10 +7,10 @@ export const Signup2Context = createContext(null); // Default value is null
 
 // Provider component
 export const Signup2Provider = ({ children }) => {
-    congn[Signup2, setSignup2] = useState(null); // Holds user information (JSON)
+    const [Signup2, setSignup2] = useState(null); // Holds user information (JSON)
 
     return (
-        <Signup2Context.Provider value={{ Signup2, setSingup2 }}>
+        <Signup2Context.Provider value={{ Signup2, setSignup2 }}>
             {children}
         </Signup2Context.Provider>
     )
