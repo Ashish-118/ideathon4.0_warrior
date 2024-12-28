@@ -76,13 +76,30 @@ function Room() {
                 </div>
 
 
-                <div className="w-[350px] h-[475px] overflow-y-auto px-3 py-2 bg-gray-800 ">
+                <div className="w-[350px] h-[475px] overflow-y-auto px-3 py-2 bg-gray-800  ">
 
                     {chatHistory.map((payload, index) => (
 
-                        <p key={index} className={` w-[300px] Border text-white  mb-2 ${(payload.sender === user?.data?.user?.username) ? "text-right" : "  "}`}>
-                            {payload.message} {!(payload.sender === user?.data?.user?.username) && `by ${payload.sender}`}
-                        </p>
+
+                        <div className=" ">
+                            {payload.sender === user?.data?.user?.username ? (
+                                <div
+                                    key={index}
+                                    className={`w-[150px] break-words text-white  border-white mb-2 ml-[170px] text-center  p-2 rounded-lg`}
+                                >
+                                    {payload.message}
+                                </div>
+                            ) : (
+                                <div
+                                    key={index}
+                                    className={`w-[150px] break-words text-white  border-green mb-2 text-center p-2 rounded-lg`}
+                                >
+                                    {payload.message} by {payload.sender}
+                                </div>
+                            )}
+                        </div>
+
+
                     ))}
 
                     <div ref={messagesEndRef} />
