@@ -10,8 +10,8 @@ import { IoLockClosed } from "react-icons/io5";
 import { IoLockOpen } from "react-icons/io5";
 
 function Login() {
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
     const [username, setusername] = useState("")
     const [email, setemail] = useState("")
     const [password, setpassword] = useState("")

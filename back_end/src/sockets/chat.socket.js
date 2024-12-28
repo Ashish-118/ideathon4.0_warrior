@@ -18,6 +18,7 @@ export const setupChatSocket = (io) => {
 
             // Fetch and send chat history for the room
             const chatHistory = await Chat.find({ room }).sort({ timestamp: 1 });
+            console.log(chatHistory)
             socket.emit("chatHistory", chatHistory);
         });
 
@@ -33,6 +34,7 @@ export const setupChatSocket = (io) => {
                 room,
                 sentBy: userId,
                 message,
+                sender: user.username
 
             });
             await chatMessage.save();

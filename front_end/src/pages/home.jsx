@@ -10,7 +10,8 @@ import ImageSlider from "../components/imageSlider.jsx";
 function home() {
     const { user } = useUser();
     const { Signup1 } = useSignup1();
-
+    const [welcome, setwelcome] = useState("Welcome ,");
+    const [doneLogin, setdoneLogin] = useState(false);
     const [isSignupOpen, setIsSignupOpen] = useState(false);
     const [isSignup2Open, setIsSignup2Open] = useState(false);
 
@@ -18,13 +19,17 @@ function home() {
     const closeSignup = () => setIsSignupOpen(false);
 
     useEffect(() => {
-
+        if (user && (user?.data?.user?.profileComplete)) {
+            setdoneLogin(true)
+            setwelcome(`Welcome back , ${user?.data?.user?.username}`)
+            console.log(welcome)
+        }
         if (user && !(user?.data?.user?.profileComplete)) {
             console.log("hello ashish")
             setIsSignupOpen(false);
             setIsSignup2Open(true);
         }
-    }, [])  //  after login when we will navigate to home  , this useEffect will run 
+    }, [])     //  after login when we will navigate to home  , this useEffect will run 
 
     useEffect(() => {
 
@@ -43,8 +48,17 @@ function home() {
 
             <div>
                 <div className={`home-content ${isSignupOpen || isSignup2Open ? "blurred" : ""}`}>
-                    <div className="w-full h-[50px] ">
-                        Welcome
+                    <div className="w-full h-[100px] mt-10 flex px-[100px] items-center">
+                        {
+                            doneLogin &&
+                            <div className="w-[70px] h-[70px] flex   rounded-full bg-black text-center  text-white items-center justify-center text-3xl mr-3">
+                                {user?.data?.user?.username[0]?.toUpperCase()}
+
+                            </div>
+                        }
+                        <div>
+                            <h1 className="text-Welcome text-4xl font-bold text-center font-serif">{welcome}</h1>
+                        </div>
                     </div>
                     <div >
                         <ImageSlider onClickSignup={openSignup} />

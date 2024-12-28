@@ -1,13 +1,13 @@
 import slide1Image from '../assets/logo/card1.jpg';
 import slide2Image from '../assets/logo/div2.jpg';
 import slide3Image from "../assets/logo/booksdiv.jpg";
-
+import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import React, { useState, useEffect } from 'react';
 import useUser from "../context/user";
 
 export default function ImageSlider({ onClickSignup }) {
-
+    const navigate = useNavigate();
     const [renderSignup, setrenderSignup] = useState(true)
     const { user } = useUser();
     const settings = {
@@ -88,7 +88,11 @@ export default function ImageSlider({ onClickSignup }) {
                                 Dive into a collection of previous year questions (PYQs) designed to enhance your preparation and improve your problem-solving skills. Practice, learn, and excel!
                             </p>
                             <div className="flex space-x-4">
-                                <button className="bg-indigo-900 text-white hover:bg-indigo-800 font-bold py-2 px-4 rounded shadow">
+                                <button
+                                    onClick={() => {
+                                        navigate('/pyq')
+                                    }}
+                                    className="bg-indigo-900 text-white hover:bg-indigo-800 font-bold py-2 px-4 rounded shadow">
                                     Explore Now
                                 </button>
                             </div>
@@ -117,7 +121,11 @@ export default function ImageSlider({ onClickSignup }) {
                                 Gain access to a wide range of books that will aid in your studies, giving you all the resources needed to succeed in your exams.
                             </p>
                             <div className="flex space-x-4 justify-center">
-                                <button className="bg-teal-900 text-white hover:bg-teal-800 font-bold py-2 px-4 rounded shadow">
+                                <button
+                                    onClick={() => {
+                                        navigate('/book')
+                                    }}
+                                    className="bg-teal-900 text-white hover:bg-teal-800 font-bold py-2 px-4 rounded shadow">
                                     Explore Now
                                 </button>
                             </div>

@@ -80,8 +80,8 @@ function Room() {
 
                     {chatHistory.map((payload, index) => (
 
-                        <p key={index} className={` text-white  mb-2 ${(payload.sender === user?.data?.user?.username) ? "text-right" : "  "}`}>
-                            {payload.message} <span className="text-sm text-gray-400">by {payload.sender}</span>
+                        <p key={index} className={` w-[300px] Border text-white  mb-2 ${(payload.sender === user?.data?.user?.username) ? "text-right" : "  "}`}>
+                            {payload.message} {!(payload.sender === user?.data?.user?.username) && `by ${payload.sender}`}
                         </p>
                     ))}
 
