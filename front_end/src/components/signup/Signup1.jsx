@@ -57,11 +57,7 @@ export default function Signup_1(props) {
             })
             console.log(response)
             if (response.status === 201) {
-
-
-
                 setSignup1(response)
-
             }
         }
         catch (error) {

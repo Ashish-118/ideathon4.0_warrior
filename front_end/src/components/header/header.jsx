@@ -5,7 +5,7 @@ import { HiOutlineSun } from "react-icons/hi";
 import "/Users/ashish/Documents/Warrior/front_end/src/customStyle/style.css"
 import { GoArrowUpRight } from "react-icons/go";
 import { Link, NavLink } from 'react-router-dom';
-
+import defaultUserLogo from "../../assets/logo/user.png"
 import useUser from "../../context/user.jsx";
 function header() {
 
@@ -113,7 +113,7 @@ function header() {
                         >
 
                             <img
-                                src={user?.data?.user?.avatar}
+                                src={user?.data?.user?.avatar || defaultUserLogo}
                                 className=" w-16 h-16 border-2 border-white rounded-full ml-6 mt-16 object-cover "
                                 alt="" />
                         </NavLink>

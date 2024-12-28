@@ -68,7 +68,16 @@ const signup_part1 = asyncHandler(async (req, res) => {
 
 
 const signup_part2 = asyncHandler(async (req, res) => {
-    const { userId, mobile_no, collegeInfo } = req.body;
+    const { userId, mobile_no } = req.body;
+    let collegeInfo;
+
+    // Parse collegeInfo safely
+    try {
+        collegeInfo = JSON.parse(req.body.collegeInfo);
+    } catch (err) {
+        throw new ApiError(400, "Invalid collegeInfo format");
+    }
+
 
     if (!userId) {
         throw new ApiError(400, "User ID is required");
@@ -82,12 +91,12 @@ const signup_part2 = asyncHandler(async (req, res) => {
     if (!(/^\d{10}$/.test(mobile_no))) {
         throw new ApiError(392, "Invalid mobile number");
     }
-
-    if (!collegeInfo?.collegeName) {
-        throw new ApiError(394, "Complete college information is required");
+    console.log("collede info ", collegeInfo.collegeName)
+    if (!collegeInfo.collegeName) {
+        throw new ApiError(394, "jesus Complete college information is required");
     }
-    if (((!user.isAdmin) && (!collegeInfo?.yearOfStudy || !collegeInfo?.branch)) || (user.isAdmin && !collegeInfo?.facultyOf)) {
-        throw new ApiError(394, "Complete college information is required");
+    if (((!user.isAdmin) && (!collegeInfo.yearOfStudy || !collegeInfo.branch)) || (user.isAdmin && !collegeInfo.facultyOf)) {
+        throw new ApiError(394, "Ashish Complete college information is required");
     }
 
     const avatarLocalPath = req.files?.avatar[0]?.path;
@@ -134,10 +143,6 @@ const Login = asyncHandler(async (req, res) => {
         throw new ApiError(401, "User not found")
     }
 
-    // if (!user.profileComplete) {
-    //     throw new ApiError(402, "You have not completed  the full step of  signup")
-
-    // }
 
 
     const isPasswordCorrect = await user.isPasswordCorrect(password);

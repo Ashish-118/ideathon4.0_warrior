@@ -13,8 +13,9 @@ import useSignup1 from "../../context/signup1.jsx";
 import collegeList from '../../assets/collegeData.js';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import useUser from "../../context/user.jsx";
+import { useNavigate } from "react-router-dom";
 export default function Signup_2() {
-    // const [isadmin, setisadmin] = useState(false);
+    const navigate = useNavigate();
     const { user } = useUser();
     const [Mobile, setMobile] = useState("");
     const [Error, setError] = useState(false)
@@ -41,16 +42,19 @@ export default function Signup_2() {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
+            console.log("userId", user?.data?.user?._id || Signup1?.data?.data?._id);
+            console.log("mobile_no", Mobile);
+            console.log("collegeInfo", collegeInfo);
+
             const formData = new FormData();
 
             // Append fields to FormData
-            formData.append("userId", user?.data?.user?._id);
+            formData.append("userId", user?.data?.user?._id || Signup1?.data?.data?._id);
             formData.append("mobile_no", Mobile);
-            formData.append("collegeInfo", collegeInfo);
+            formData.append("collegeInfo", JSON.stringify(collegeInfo)); // Serialize collegeInfo object
             if (selectedFile) {
                 formData.append("avatar", selectedFile);
             }
-
 
             const response = await axios.post(
                 "http://localhost:8000/api/v1/users/next/signup",
@@ -63,17 +67,27 @@ export default function Signup_2() {
             );
 
             console.log("Response:", response.data);
-        }
-        catch (err) {
-            if ([400, 391, 392, 394].includes(err.statusCode)) {
-                setError(true)
-                setErrorMessage(err.message)
-            }
-            console.log(err)
+            if (response?.data?.success) {
 
+                setError(true)
+                setErrorMessage("Registered successfully")
+                // console.log(Error, ErrorMessage)
+                setTimeout(() => {
+                    navigate('/login')
+                }, 1000)
+            }
+
+
+
+        } catch (err) {
+            if (err.response?.status && [400, 391, 392, 394].includes(err.response.status)) {
+                setError(true);
+                setErrorMessage(err.response.data.message || "An error occurred");
+            }
             console.error("Error during signup:", err);
         }
-    }
+    };
+
 
     return (
         <Signup1Provider>
@@ -88,7 +102,7 @@ export default function Signup_2() {
                                 className="mx-auto h-10 w-auto"
                             />
                             {
-                                Error && <h4 className="text-red-600 text-center">{ErrorMessage} !!!</h4>
+                                Error && <h4 className="text-red-600 text-center">{ErrorMessage} </h4>
                             }
                             <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
                                 College Info
