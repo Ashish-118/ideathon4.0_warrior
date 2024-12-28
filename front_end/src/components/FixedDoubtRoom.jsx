@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { HiOutlineArrowLeftCircle } from "react-icons/hi2";
 import Room from "./chatRoom/room.jsx";
 import { HiOutlineArrowCircleRight } from "react-icons/hi";
+import { CiCircleChevLeft } from "react-icons/ci";
 function Fixed() {
     const [AskState, setAskState] = useState(false);
     function toggleAskState() {
@@ -12,8 +13,8 @@ function Fixed() {
     return (
         <>
             {/* hover:text-purple-700 */}
-            <div className="fixed top-[350px] right-[50px] w-[50px] h-[50px] flex items-center justify-center " >
-                <HiOutlineArrowLeftCircle className="text-Custompurple w-[50px] h-[50px] hover:text-purple-700 " onClick={toggleAskState} />
+            <div className="fixed top-[350px] right-[5px] w-[50px] h-[50px] flex items-center justify-center " >
+                <CiCircleChevLeft className="text-Custompurple w-[50px] h-[50px] hover:text-purple-700 " onClick={toggleAskState} />
 
             </div>
             <div className=" w-[100px] h-[100px] flex bg-Custompurple rounded-full items-center sticky bottom-2 left-[650px] hover:bg-purple-700">

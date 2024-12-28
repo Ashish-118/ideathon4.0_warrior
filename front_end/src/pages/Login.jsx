@@ -25,9 +25,9 @@ function Login() {
         try {
 
             const response = await axios.post("http://localhost:8000/api/v1/users/Login", {
-                username,
-                email,
-                password,
+                username: username.trim(),
+                email: email.trim(),
+                password: password.trim(),
             });
 
             console.log(response)

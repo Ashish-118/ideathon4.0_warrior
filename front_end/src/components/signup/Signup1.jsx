@@ -49,10 +49,10 @@ export default function Signup_1(props) {
             }
 
             const response = await axios.post("http://localhost:8000/api/v1/users/next", {
-                username,
-                fullName,
-                email,
-                password,
+                username: username.trim(),
+                fullName: fullName.trim(),
+                email: email.trim(),
+                password: password.trim(),
                 role
             })
             console.log(response)
