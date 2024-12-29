@@ -4,6 +4,10 @@ import { HiPaperClip } from "react-icons/hi2";
 import { HiMiniRocketLaunch } from "react-icons/hi2";
 import { io } from "socket.io-client";
 import useUser from "../../context/user.jsx";
+import { BsChatLeftFill } from "react-icons/bs";
+import { BsChatRightFill } from "react-icons/bs";
+import MessageTBox from "./otherMessageBox.jsx";
+import ReplyBox from "./replyBox.jsx";
 
 function Room() {
     const [Message, setMessage] = useState("");
@@ -65,8 +69,8 @@ function Room() {
 
     return (
         <div>
-            <div className="w-[350px] h-[700px] bg-gray-900 rounded-lg border-2 border-menuItem shadow-2xl shadow-menuItem">
-                <div className="flex flex-col h-[45px] w-[350px] justify-center">
+            <div className="w-[400px] h-[700px] bg-gray-900 rounded-lg border-2 border-menuItem shadow-2xl shadow-menuItem">
+                <div className="flex flex-col h-[45px] w-[400px] justify-center">
                     <h1 className="text-white font-baloo text-center text-2xl mt-3">Doubt room</h1>
                     <hr className="mt-1" />
                 </div>
@@ -76,28 +80,29 @@ function Room() {
                 </div>
 
 
-                <div className="w-[350px] h-[475px] overflow-y-auto px-3 py-2 bg-gray-800  ">
+                <div className="w-[400px] h-[475px] overflow-y-auto px-3 py-2 bg-slate-800  ">
 
                     {chatHistory.map((payload, index) => (
 
 
-                        <div className=" ">
+                        <div className="">
                             {payload.sender === user?.data?.user?.username ? (
                                 <div
                                     key={index}
-                                    className={`w-[150px] break-words text-white  border-white mb-2 ml-[170px] text-center  p-2 rounded-lg`}
+                                    className={``}
                                 >
-                                    {payload.message}
+                                    {<ReplyBox message={payload.message} sender='you' />}
                                 </div>
                             ) : (
                                 <div
                                     key={index}
-                                    className={`w-[150px] break-words text-white  border-green mb-2 text-center p-2 rounded-lg`}
+                                    className="mb-2"
                                 >
-                                    {payload.message} by {payload.sender}
+                                    {<MessageTBox message={payload.message} sender={payload.sender} />}
                                 </div>
                             )}
                         </div>
+
 
 
                     ))}

@@ -17,7 +17,7 @@ export const setupChatSocket = (io) => {
             // console.log(`User ${userId} joined room: ${room}`);
 
             // Fetch and send chat history for the room
-            const chatHistory = await Chat.find({ room }).sort({ timestamp: 1 });
+            const chatHistory = await Chat.find({ room }).sort({ createdAt: 1 });
             console.log(chatHistory)
             socket.emit("chatHistory", chatHistory);
         });
