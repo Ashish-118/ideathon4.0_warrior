@@ -11,6 +11,7 @@ import { IoMdSend } from "react-icons/io";
 import ReplyBox from "./replyBox.jsx";
 import { FiUpload } from "react-icons/fi";
 import ShowFiles from "./showSelectedFile.jsx";
+import axios from "axios"
 
 function Room() {
     const [Message, setMessage] = useState("");
@@ -19,14 +20,16 @@ function Room() {
     const socketRef = useRef(null);
     const messagesEndRef = useRef(null); // To scroll to the end of the messages container
     const [selectedFile, setSelectedFile] = useState([]);
-
+    const [files, setfiles] = useState(null);
 
     const handleFileChange = (e) => {
         e.preventDefault();
-        const fileList = e.target.files; // FileList object
+        const fileList = e.target.files;
+        console.log('file list ', fileList)
+        setfiles(fileList)
         const filesArray = Array.from(fileList); // Convert to an array
         setSelectedFile(filesArray);
-        console.log("Selected files:", filesArray);
+
     };
 
 
@@ -73,6 +76,50 @@ function Room() {
         }
     };
 
+
+    const handleFileUpload = async (e) => {
+        e.preventDefault();
+        // const socketInstance = socketRef.current;
+        const userId = user?.data?.user?._id;
+        const sender = user?.data?.user?.username;
+        const Room = user?.data?.user?.collegeInfo.collegeName;
+
+        try {
+
+            const formData = new FormData();
+
+
+            if (files) {
+                Array.from(files).forEach((file, index) => {
+                    formData.append(`fileLink`, file);
+                });
+            }
+
+            formData.append('room', Room)
+            formData.append('sentBy', userId)
+            formData.append('sender', sender)
+            const response = await axios.post(
+                "http://localhost:8000/api/v1/users/fileUpload",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+
+                }
+            );
+
+
+            setfiles(null)
+            setSelectedFile([])
+
+            console.log("Files uploaded successfully:", response);
+        } catch (error) {
+            console.log("Error while uploading files:", error);
+        }
+    };
+
+
     // Scroll to bottom of the chat when new message is added
     useEffect(() => {
         // Scroll to the bottom if the user is at the bottom of the chat
@@ -99,22 +146,28 @@ function Room() {
                     {chatHistory.map((payload, index) => (
 
 
-                        <div className="">
-                            {payload.sender === user?.data?.user?.username ? (
-                                <div
-                                    key={index}
-                                >
-                                    {<ReplyBox message={payload.message} sender='you' />}
-                                </div>
-                            ) : (
-                                <div
-                                    key={index}
-                                    className="mb-2"
-                                >
-                                    {<MessageTBox message={payload.message} sender={payload.sender} />}
-                                </div>
-                            )}
-                        </div>
+                        !payload.fileLink
+                            ?
+                            <div className="">
+                                {
+                                    (payload.sender === user?.data?.user?.username) ? (
+                                        <div
+                                            key={index}
+                                        >
+                                            {<ReplyBox message={payload.message} sender='you' />}
+                                        </div>
+                                    ) : (
+                                        <div
+                                            key={index}
+                                            className="mb-2"
+                                        >
+                                            {<MessageTBox message={payload.message} sender={payload.sender} />}
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            :
+                            ''
 
 
 
@@ -166,7 +219,7 @@ function Room() {
                                 >
                                     {
                                         selectedFile.length > 0 && (
-                                            <div className="h-[65px] flex flex-wrap w-[350px] mt-1 justify-center bg-white overflow-y-scroll">
+                                            <div className=" flex flex-wrap mt-1 justify-center bg-white overflow-y-scroll">
                                                 {selectedFile.map((file, index) => (
                                                     <ShowFiles index={index} filePath={file} />
                                                 ))}
@@ -177,7 +230,7 @@ function Room() {
                                 </div>
                                 <FiUpload
                                     className="text-white bg-purple-950 w-[40px] h-[65px] hover:text-gray-300"
-                                    onClick={handleSendMessage}
+                                    onClick={handleFileUpload}
                                 />
                             </>
 

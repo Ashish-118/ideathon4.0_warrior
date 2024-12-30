@@ -6,6 +6,7 @@ import { PYQ } from "../models/PYQ.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
 import { Book } from "../models/book.model.js";
+import { Chat } from "../models/chat.model.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -413,27 +414,27 @@ const uploadBook = asyncHandler(async (req, res) => {
     }
     const Admin = await User.findById(req.user?._id);
 
-    const bookPdf_localPath = req.file?.path;
+    const file_localPath = req.file?.path;
 
 
-    if (!bookPdf_localPath) {
+    if (!file_localPath) {
         throw new ApiError(400, " not found local path of book")
     }
-    const bookPdfLink = await uploadOnCloudinary(bookPdf_localPath, "raw")
+    const fileLink = await uploadOnCloudinary(file_localPath, "raw")
 
 
-    if (!bookPdfLink) {
+    if (!fileLink) {
         throw new ApiError(400, "Error while uploading bookPdf to cloudinary")
     }
 
 
 
-    const newBook = await Book.create({
+    const fileChat = await Book.create({
         forYear,
         forBranch,
         title,
         author,
-        bookPdf: bookPdfLink?.url,
+        bookPdf: fileLink?.url,
         sentByAdmin: Admin._id,
         collegeName: Admin.collegeInfo.collegeName
 
@@ -441,7 +442,7 @@ const uploadBook = asyncHandler(async (req, res) => {
 
     return res.status(200)
         .json(
-            new ApiResponse(200, newBook, "successfully stored new book")
+            new ApiResponse(200, fileChat, "successfully stored new book")
         )
 
 
@@ -450,6 +451,42 @@ const uploadBook = asyncHandler(async (req, res) => {
 const getUserProfile = asyncHandler(async (req, res) => {
 
 })
+
+const fileUpload = asyncHandler(async (req, res) => {
+    const { room, sentBy, sender } = req.body
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+        throw new ApiError(400, "No files found");
+    }
+
+    const fileChats = [];
+
+
+    for (const file of files) {
+        const file_localPath = file.path;
+
+
+        const fileLink = await uploadOnCloudinary(file_localPath, "raw");
+
+        if (!fileLink) {
+            throw new ApiError(400, "Error while uploading file to Cloudinary");
+        }
+
+
+        const fileChat = await Chat.create({
+            room,
+            sentBy,
+            sender,
+            fileLink: fileLink?.url,
+        });
+
+
+        fileChats.push(fileChat);
+    }
+
+    return res.status(200).json(new ApiResponse(200, fileChats, "Successfully stored file chats"));
+});
 
 export {
     signup_part1,
@@ -462,5 +499,6 @@ export {
     DeletePyq,
     getPyq,
     getBook,
-    uploadBook
+    uploadBook,
+    fileUpload
 }

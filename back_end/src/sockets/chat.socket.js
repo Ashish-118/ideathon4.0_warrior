@@ -48,6 +48,10 @@ export const setupChatSocket = (io) => {
             });
         });
 
+        socket.on("file", async ({ userId, fileLink }) => {
+
+        })
+
         // Handle disconnection
         socket.on("disconnect", () => {
             // console.log("User disconnected:", socket.id);

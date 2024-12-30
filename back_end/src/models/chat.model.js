@@ -8,9 +8,12 @@ const chatSchema = new Schema({
     },
     message: {
         type: String,
-        required: true
-    },
 
+    },
+    fileLink: {
+        type: String,
+
+    },
     ansAttachment: {
         type: String,
     },

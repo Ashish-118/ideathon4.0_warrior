@@ -10,7 +10,8 @@ import {
     DeletePyq,
     getPyq,
     getBook,
-    uploadBook
+    uploadBook,
+    fileUpload,
 } from "../controllers/user.controller.js"
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -60,4 +61,10 @@ router.route("/pyq").post(verifyJWT, getPyq)
 router.route('/book').post(verifyJWT, getBook)
 router.route('/book/upload').post(verifyJWT, upload.single('bookPdf'), uploadBook)
 
+router.route("/fileUpload").post(
+
+    upload.array("fileLink", 10),
+
+    fileUpload
+);
 export default router
