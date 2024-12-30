@@ -10,6 +10,7 @@ const chatSchema = new Schema({
         type: String,
         required: true
     },
+
     ansAttachment: {
         type: String,
     },

@@ -7,7 +7,10 @@ import useUser from "../../context/user.jsx";
 import { BsChatLeftFill } from "react-icons/bs";
 import { BsChatRightFill } from "react-icons/bs";
 import MessageTBox from "./otherMessageBox.jsx";
+import { IoMdSend } from "react-icons/io";
 import ReplyBox from "./replyBox.jsx";
+import { FiUpload } from "react-icons/fi";
+import ShowFiles from "./showSelectedFile.jsx";
 
 function Room() {
     const [Message, setMessage] = useState("");
@@ -15,6 +18,17 @@ function Room() {
     const { user } = useUser();
     const socketRef = useRef(null);
     const messagesEndRef = useRef(null); // To scroll to the end of the messages container
+    const [selectedFile, setSelectedFile] = useState([]);
+
+
+    const handleFileChange = (e) => {
+        e.preventDefault();
+        const fileList = e.target.files; // FileList object
+        const filesArray = Array.from(fileList); // Convert to an array
+        setSelectedFile(filesArray);
+        console.log("Selected files:", filesArray);
+    };
+
 
     useEffect(() => {
         const socketInstance = io("http://localhost:8000");
@@ -43,16 +57,16 @@ function Room() {
         };
     }, [user]);
 
-    // Handle message send
+
     const handleSendMessage = (e) => {
         e.preventDefault();
 
         const socketInstance = socketRef.current;
         const userId = user?.data?.user?._id;
         if (socketInstance && Message.trim()) {
-            // Emit the chat message
+
             socketInstance.emit("chat", { userId, message: Message });
-            // console.log(Message, " ", userId)
+
             setMessage("");
         } else {
             console.error("Message is empty or socket not connected.");
@@ -69,7 +83,7 @@ function Room() {
 
     return (
         <div>
-            <div className="w-[400px] h-[700px] bg-gray-900 rounded-lg border-2 border-menuItem shadow-2xl shadow-menuItem">
+            <div className="w-[400px]  bg-violet-700 rounded-lg border-2 h-1/4 border-menuItem shadow-2xl shadow-menuItem">
                 <div className="flex flex-col h-[45px] w-[400px] justify-center">
                     <h1 className="text-white font-baloo text-center text-2xl mt-3">Doubt room</h1>
                     <hr className="mt-1" />
@@ -80,7 +94,7 @@ function Room() {
                 </div>
 
 
-                <div className="w-[400px] h-[475px] overflow-y-auto px-3 py-2 bg-slate-800  ">
+                <div className=" w-[400px] h-[450px] overflow-y-auto px-3 py-2 bg-slate-800  2/4">
 
                     {chatHistory.map((payload, index) => (
 
@@ -89,7 +103,6 @@ function Room() {
                             {payload.sender === user?.data?.user?.username ? (
                                 <div
                                     key={index}
-                                    className={``}
                                 >
                                     {<ReplyBox message={payload.message} sender='you' />}
                                 </div>
@@ -111,20 +124,67 @@ function Room() {
                 </div>
 
 
-                <div className="flex">
-                    <HiPaperClip className="text-white rounded-l ml-1 items-center bg-menuItem w-[30px] h-[40px] hover:text-gray-200" />
+                <div className="flex justify-center items-center  h-1/4">
+                    <label
+                        htmlFor="file-upload"
+                    >
+                        <HiPaperClip
+                            className="text-white rounded ml-1 items-center bg-menuItem w-[30px] h-[65px] hover:text-gray-200"
+                        />
+                    </label>
                     <input
-                        type="text"
-                        placeholder="Ask Question"
-                        className="w-[280px] h-[40px] rounded-r text-center outline-none"
-                        value={Message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        multiple
+                        className="sr-only"
+                        onChange={handleFileChange}
                     />
-                    <HiMiniRocketLaunch
-                        className="text-white w-[25px] h-[40px] ml-2.5 hover:text-red-400"
-                        onClick={handleSendMessage}
-                    />
+
+
+                    {
+                        selectedFile.length == 0
+                            ?
+                            <>
+
+                                <textarea
+                                    placeholder="Ask Question"
+                                    className="min-w-[320px] max-w-[320px] h-auto max-h-[100px]  rounded-r text-center outline-none p-2 resize-none overflow-y-auto break-words"
+                                    value={Message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                />
+                                <IoMdSend
+                                    className="text-white bg-purple-950 w-[40px] h-[65px] hover:text-gray-300"
+                                    onClick={handleSendMessage}
+                                />
+                            </>
+
+                            :
+                            <>
+                                <div
+                                    className="h-[65px] w-[350px]  bg-white overflow-y-scroll"
+                                >
+                                    {
+                                        selectedFile.length > 0 && (
+                                            <div className="h-[65px] flex flex-wrap w-[350px] mt-1 justify-center bg-white overflow-y-scroll">
+                                                {selectedFile.map((file, index) => (
+                                                    <ShowFiles index={index} filePath={file} />
+                                                ))}
+                                            </div>
+                                        )
+                                    }
+
+                                </div>
+                                <FiUpload
+                                    className="text-white bg-purple-950 w-[40px] h-[65px] hover:text-gray-300"
+                                    onClick={handleSendMessage}
+                                />
+                            </>
+
+                    }
+
                 </div>
+
             </div >
         </div >
     );
