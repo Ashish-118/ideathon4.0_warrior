@@ -21,6 +21,8 @@ function Room() {
     const messagesEndRef = useRef(null); // To scroll to the end of the messages container
     const [selectedFile, setSelectedFile] = useState([]);
     const [files, setfiles] = useState(null);
+    const [displayFile, setdisplayFile] = useState(null);
+    const [isFileRenderingComplete, setIsFileRenderingComplete] = useState(true);
 
     const handleFileChange = (e) => {
         e.preventDefault();
@@ -50,11 +52,17 @@ function Room() {
             socketInstance.on("chat", ({ message, sender, timestamp, chatId }) => {
                 setChatHistory((prev) => [...prev, { message, sender, timestamp, chatId }]);
             });
+
+            // Listen for new file messages
+
+            socketInstance.on("file", ({ sender, fileLink }) => {
+                setChatHistory((prev) => [...prev, { sender, fileLink }]);
+            });
         } else {
             console.error("User ID is missing!");
         }
 
-        // Cleanup on component unmount
+
         return () => {
             socketInstance.disconnect();
         };
@@ -72,14 +80,15 @@ function Room() {
 
             setMessage("");
         } else {
-            console.error("Message is empty or socket not connected.");
+            console.error("file is empty or socket not connected.");
         }
     };
 
 
     const handleFileUpload = async (e) => {
         e.preventDefault();
-        // const socketInstance = socketRef.current;
+        setIsFileRenderingComplete(false);
+        console.log("clicked")
         const userId = user?.data?.user?._id;
         const sender = user?.data?.user?.username;
         const Room = user?.data?.user?.collegeInfo.collegeName;
@@ -110,15 +119,44 @@ function Room() {
             );
 
 
+
             setfiles(null)
             setSelectedFile([])
 
             console.log("Files uploaded successfully:", response);
+
+            if (response.status === 200) {
+                const filesArray = Array.from(response?.data?.data); // Convert to an array
+
+                setdisplayFile(filesArray)
+
+            }
         } catch (error) {
             console.log("Error while uploading files:", error);
         }
     };
 
+    useEffect(() => {
+        const socketInstance = socketRef.current;
+        if (socketInstance && displayFile) {
+            const userId = user?.data?.user?._id;
+
+            // Rendering starts, disable the button
+
+            // Emit each file to the socket
+            displayFile.map((file, index) => {
+                socketInstance.emit("file", { userId, fileLink: file.fileLink });
+            });
+
+            setTimeout(() => {
+                setIsFileRenderingComplete(true);
+            }, 100);
+
+            setdisplayFile(null);
+        } else {
+            console.error("Message is empty or socket not connected.");
+        }
+    }, [displayFile]);
 
     // Scroll to bottom of the chat when new message is added
     useEffect(() => {
@@ -167,7 +205,24 @@ function Room() {
                                 }
                             </div>
                             :
-                            ''
+                            <div className="">
+                                {
+                                    (payload.sender === user?.data?.user?.username) ? (
+                                        <div
+                                            key={index}
+                                        >
+                                            {<ReplyBox message={payload.fileLink} sender='you' />}
+                                        </div>
+                                    ) : (
+                                        <div
+                                            key={index}
+                                            className="mb-2"
+                                        >
+                                            {<MessageTBox message={payload.fileLink} sender={payload.sender} />}
+                                        </div>
+                                    )
+                                }
+                            </div>
 
 
 
@@ -229,8 +284,8 @@ function Room() {
 
                                 </div>
                                 <FiUpload
-                                    className="text-white bg-purple-950 w-[40px] h-[65px] hover:text-gray-300"
-                                    onClick={handleFileUpload}
+                                    className={`text-white bg-purple-950 w-[40px] h-[65px] ${isFileRenderingComplete ? 'hover:text-gray-300' : 'opacity-50 cursor-not-allowed'}`}
+                                    onClick={isFileRenderingComplete ? handleFileUpload : null}
                                 />
                             </>
 

@@ -49,7 +49,17 @@ export const setupChatSocket = (io) => {
         });
 
         socket.on("file", async ({ userId, fileLink }) => {
+            const user = await User.findById(userId);
+            if (!user || !user.collegeInfo?.collegeName) {
+                return socket.emit("error", "Invalid user or college information.");
+            }
 
+            const room = user.collegeInfo.collegeName;
+            io.to(room).emit("file", {
+                fileLink: fileLink,
+                sender: user.username,
+
+            });
         })
 
         // Handle disconnection
