@@ -7,6 +7,9 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
 import { Book } from "../models/book.model.js";
 import { Chat } from "../models/chat.model.js";
+import fs from 'fs';
+
+
 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -452,8 +455,47 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 })
 
+// const fileUpload = asyncHandler(async (req, res) => {
+//     const { room, sentBy, sender } = req.body
+//     const files = req.files;
+
+//     if (!files || files.length === 0) {
+//         throw new ApiError(400, "No files found");
+//     }
+
+//     const fileChats = [];
+
+
+//     for (const file of files) {
+//         const file_localPath = file.path;
+
+
+//         const fileLink = await uploadOnCloudinary(file_localPath, "raw");
+
+//         if (!fileLink) {
+//             throw new ApiError(400, "Error while uploading file to Cloudinary");
+//         }
+
+
+//         const fileChat = await Chat.create({
+//             room,
+//             sentBy,
+//             sender,
+//             fileLink: fileLink?.url,
+//         });
+
+
+//         fileChats.push(fileChat);
+//     }
+
+//     return res.status(200).json(new ApiResponse(200, fileChats, "Successfully stored file chats"));
+// });
+
+
+
+
 const fileUpload = asyncHandler(async (req, res) => {
-    const { room, sentBy, sender } = req.body
+    const { room, sentBy, sender } = req.body;
     const files = req.files;
 
     if (!files || files.length === 0) {
@@ -462,27 +504,44 @@ const fileUpload = asyncHandler(async (req, res) => {
 
     const fileChats = [];
 
-
     for (const file of files) {
-        const file_localPath = file.path;
+        try {
+            // Upload the file to Cloudinary
+            const file_localPath = file.path;
 
 
-        const fileLink = await uploadOnCloudinary(file_localPath, "raw");
+            // Read the file locally for Base64 encoding
 
-        if (!fileLink) {
-            throw new ApiError(400, "Error while uploading file to Cloudinary");
+            let cloudinaryResponse = null;
+
+            if (file.mimetype === "application/pdf") {
+                cloudinaryResponse = await uploadOnCloudinary(file_localPath, "raw");
+            } else if (file.mimetype.startsWith("image/")) {
+                cloudinaryResponse = await uploadOnCloudinary(file_localPath, "image");
+            } else if (file.mimetype.startsWith("video/")) {
+                cloudinaryResponse = await uploadOnCloudinary(file_localPath, "video");
+            } else {
+                throw new ApiError(400, `Unsupported file type: ${file.mimetype}`);
+            }
+
+            if (!cloudinaryResponse) {
+                throw new ApiError(400, "Ashish, Error while uploading file to Cloudinary");
+            }
+            // Create a file chat object
+            const fileChat = await Chat.create({
+                room,
+                sentBy,
+                sender,
+                fileType: file.mimetype,
+                fileLink: cloudinaryResponse?.url, // Store Cloudinary link in MongoDB
+            });
+
+            fileChats.push(fileChat);
+
+
+        } catch (err) {
+            throw new ApiError(500, `Error processing file ${file.originalname}: ${err.message}`);
         }
-
-
-        const fileChat = await Chat.create({
-            room,
-            sentBy,
-            sender,
-            fileLink: fileLink?.url,
-        });
-
-
-        fileChats.push(fileChat);
     }
 
     return res.status(200).json(new ApiResponse(200, fileChats, "Successfully stored file chats"));

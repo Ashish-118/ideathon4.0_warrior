@@ -10,6 +10,9 @@ const chatSchema = new Schema({
         type: String,
 
     },
+    fileType: {
+        type: String,
+    },
     fileLink: {
         type: String,
 

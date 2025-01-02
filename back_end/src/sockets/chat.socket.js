@@ -43,12 +43,12 @@ export const setupChatSocket = (io) => {
             io.to(room).emit("chat", {
                 message: chatMessage.message,
                 sender: user.username,
-                timestamp: chatMessage.timestamp,
+                timestamp: new Date().toISOString(),
                 chatId: chatMessage?._id
             });
         });
 
-        socket.on("file", async ({ userId, fileLink }) => {
+        socket.on("file", async ({ userId, fileLink, fileType }) => {
             const user = await User.findById(userId);
             if (!user || !user.collegeInfo?.collegeName) {
                 return socket.emit("error", "Invalid user or college information.");
@@ -57,8 +57,9 @@ export const setupChatSocket = (io) => {
             const room = user.collegeInfo.collegeName;
             io.to(room).emit("file", {
                 fileLink: fileLink,
+                fileType: fileType,
                 sender: user.username,
-
+                timestamp: new Date().toISOString()
             });
         })
 
