@@ -210,7 +210,9 @@ const pyqUploader = asyncHandler(async (req, res) => {
     if (solutionVideo_localPath) {
         solutionVideoLink = await uploadOnCloudinary(solutionVideo_localPath)
     }
-
+    if (!solutionVideoLink && !solutionPdfLink) {
+        throw new ApiError(400, "Error while uploading solution to the cloudinary")
+    }
 
     const newPYQ = await PYQ.create({
         forYear,
@@ -221,7 +223,9 @@ const pyqUploader = asyncHandler(async (req, res) => {
         solutionPdf: solutionPdfLink?.url || null,
         solutionVideo: solutionVideoLink?.url || null,
         sentByAdmin: Admin._id,
-        collegeName: Admin.collegeInfo.collegeName
+        collegeName: Admin.collegeInfo.collegeName,
+        sender: Admin.username,
+        profileLink: Admin.avatar
 
     })
 
@@ -454,45 +458,6 @@ const uploadBook = asyncHandler(async (req, res) => {
 const getUserProfile = asyncHandler(async (req, res) => {
 
 })
-
-// const fileUpload = asyncHandler(async (req, res) => {
-//     const { room, sentBy, sender } = req.body
-//     const files = req.files;
-
-//     if (!files || files.length === 0) {
-//         throw new ApiError(400, "No files found");
-//     }
-
-//     const fileChats = [];
-
-
-//     for (const file of files) {
-//         const file_localPath = file.path;
-
-
-//         const fileLink = await uploadOnCloudinary(file_localPath, "raw");
-
-//         if (!fileLink) {
-//             throw new ApiError(400, "Error while uploading file to Cloudinary");
-//         }
-
-
-//         const fileChat = await Chat.create({
-//             room,
-//             sentBy,
-//             sender,
-//             fileLink: fileLink?.url,
-//         });
-
-
-//         fileChats.push(fileChat);
-//     }
-
-//     return res.status(200).json(new ApiResponse(200, fileChats, "Successfully stored file chats"));
-// });
-
-
-
 
 const fileUpload = asyncHandler(async (req, res) => {
     const { room, sentBy, sender } = req.body;

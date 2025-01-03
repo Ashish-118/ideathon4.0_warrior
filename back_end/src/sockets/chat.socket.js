@@ -2,6 +2,16 @@ import { Chat } from '../models/chat.model.js'; // Import your Chat schema
 import { User } from '../models/user.model.js'; // Import your User schema
 
 export const setupChatSocket = (io) => {
+
+    const formatTime12Hour = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+        });
+    };
     io.on("connection", (socket) => {
         // console.log("New user connected:", socket.id);
 
@@ -43,12 +53,12 @@ export const setupChatSocket = (io) => {
             io.to(room).emit("chat", {
                 message: chatMessage.message,
                 sender: user.username,
-                timestamp: new Date().toISOString(),
+                createdAt: chatMessage.createdAt,
                 chatId: chatMessage?._id
             });
         });
 
-        socket.on("file", async ({ userId, fileLink, fileType }) => {
+        socket.on("file", async ({ userId, fileLink, fileType, createdAt }) => {
             const user = await User.findById(userId);
             if (!user || !user.collegeInfo?.collegeName) {
                 return socket.emit("error", "Invalid user or college information.");
@@ -59,7 +69,7 @@ export const setupChatSocket = (io) => {
                 fileLink: fileLink,
                 fileType: fileType,
                 sender: user.username,
-                timestamp: new Date().toISOString()
+                createdAt: createdAt
             });
         })
 

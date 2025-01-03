@@ -24,6 +24,15 @@ function Room() {
     const [displayFile, setdisplayFile] = useState(null);
     const [isFileRenderingComplete, setIsFileRenderingComplete] = useState(true);
 
+    const formatTime12Hour = (timestamp) => {
+        const date = new Date(timestamp);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true,
+        });
+    };
 
     const handleFileChange = (e) => {
         e.preventDefault();
@@ -50,15 +59,15 @@ function Room() {
             });
 
             // Listen for new chat messages
-            socketInstance.on("chat", ({ message, sender, timestamp, chatId }) => {
-                setChatHistory((prev) => [...prev, { message, sender, timestamp, chatId }]);
+            socketInstance.on("chat", ({ message, sender, createdAt, chatId }) => {
+                setChatHistory((prev) => [...prev, { message, sender, createdAt, chatId }]);
             });
 
 
             // Listen for new file messages
-            socketInstance.on("file", ({ fileLink, fileType, sender, timestamp }) => {
-                console.log("This  is the chat history ", chatHistory)
-                setChatHistory((prev) => [...prev, { fileLink, fileType, sender, timestamp }]);
+            socketInstance.on("file", ({ fileLink, fileType, sender, createdAt }) => {
+                // console.log("This  is the chat history ", chatHistory)
+                setChatHistory((prev) => [...prev, { fileLink, fileType, sender, createdAt }]);
             });
         } else {
             console.error("User ID is missing!");
@@ -117,18 +126,7 @@ function Room() {
 
             if (response.status === 200) {
                 console.log("ya this is the response  ", response)
-                // Emit socket event for each uploaded file
-                // const uploadedFiles = response?.data?.data || [];
-                // console.log('after uploading  ', uploadedFiles)
-                // uploadedFiles.forEach((file) => {
-                //     console.log('inside uploading emit')
-                //     socketInstance.emit("file", {
-                //         userId,
-                //         fileLink: file.fileLink,
 
-                //     });
-
-                // });
 
 
                 const filesArray = Array.from(response?.data?.data); // Convert to an array
@@ -152,7 +150,7 @@ function Room() {
             // Rendering starts, disable the button
             // Emit each file to the socket
             displayFile.map((file, index) => {
-                socketInstance.emit("file", { userId, fileLink: file.fileLink, fileType: file.fileType });
+                socketInstance.emit("file", { userId, fileLink: file.fileLink, fileType: file.fileType, createdAt: file.createdAt });
             });
             setTimeout(() => {
                 setIsFileRenderingComplete(true);
@@ -187,8 +185,7 @@ function Room() {
                 <div className=" w-[400px] h-[450px] overflow-y-auto px-3 py-2 bg-slate-800  2/4">
 
                     {chatHistory.map((payload, index) => {
-                        const time12Hour = dayjs(payload.timestamp).format("hh:mm A");
-
+                        // console.log(payload.timestamp)
                         return (
 
                             <div key={index}>
@@ -202,14 +199,14 @@ function Room() {
                                                     <div
                                                         key={index}
                                                     >
-                                                        {<ReplyBox message={payload.message} timestamp={time12Hour} sender='you' />}
+                                                        {<ReplyBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender='you' />}
                                                     </div>
                                                 ) : (
                                                     <div
                                                         key={index}
                                                         className="mb-2"
                                                     >
-                                                        {<MessageTBox message={payload.message} timestamp={time12Hour} sender={payload.sender} />}
+                                                        {<MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} />}
                                                     </div>
                                                 )
                                             }
@@ -225,7 +222,7 @@ function Room() {
                                                         <div
                                                             key={index}
                                                         >
-                                                            {<ReplyBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={time12Hour} sender='you' />}
+                                                            {<ReplyBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender='you' />}
                                                         </div>
                                                     ) :
                                                     (
@@ -233,7 +230,7 @@ function Room() {
                                                             key={index}
                                                             className="mb-2"
                                                         >
-                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={time12Hour} sender={payload.sender} />}
+                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} />}
                                                         </div>
                                                     )
                                             }

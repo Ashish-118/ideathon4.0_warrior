@@ -37,7 +37,7 @@ function ReplyBox({ message, sender, fileLink, fileType, timestamp }) {
 
             </div>
             <div className=" text-gray-400 w-fit ml-[170px] ">
-                <h4 className="text-xs"> {timestamp || 'hello'}</h4>
+                <h4 className="text-xs"> {timestamp || '....'}</h4>
 
             </div>
         </div>

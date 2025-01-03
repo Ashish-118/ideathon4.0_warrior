@@ -18,13 +18,21 @@ const pyqSchema = new Schema(
         },
         solutionPdf: {
             type: String,
-            required: true,
+
         },
         solutionVideo: {
             type: String,
-            required: true,
+
         },
         paperYear: {
+            type: String,
+            required: true,
+        },
+        profileLink: {
+            type: String,
+            required: true,
+        },
+        sender: {
             type: String,
             required: true,
         },

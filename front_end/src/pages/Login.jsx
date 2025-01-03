@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginApi } from "../ApiCalls/api.js";
 import { IoLockClosed } from "react-icons/io5";
 import { IoLockOpen } from "react-icons/io5";
+import usePyq from "../context/getPyq.jsx";
 
 function Login() {
 
@@ -19,7 +20,7 @@ function Login() {
     const [OpenLock, setOpenLock] = useState(false)
 
     const { setUser } = useUser();
-
+    const { setPyq } = usePyq();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -45,6 +46,22 @@ function Login() {
 
                     navigate("/");
                 }, 2500)
+
+                try {
+                    const pyqResponse = await axios.post(
+                        "http://localhost:8000/api/v1/users/pyq",
+                        {},
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    setPyq(Array.from(pyqResponse.data.data))
+                    console.log("PYQs fetched successfully:", pyqResponse.data.data);
+                } catch (error) {
+                    console.error("Error fetching PYQs:", error.response?.data || error.message);
+                }
             }
         } catch (error) {
             console.error("Error during login:", error.message);
