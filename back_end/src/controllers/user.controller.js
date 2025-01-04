@@ -186,10 +186,10 @@ const pyqUploader = asyncHandler(async (req, res) => {
     }
     const Admin = await User.findById(req.user?._id);
 
-    const paperPdf_localPath = req.files?.paperPdf[0]?.path;
-    const solutionPdf_localPath = req.files?.solutionPdf[0]?.path;
-    const solutionVideo_localPath = req.files?.solutionVideo[0]?.path;
-
+    const paperPdf_localPath = req.files?.paperPdf?.[0]?.path || null;
+    const solutionPdf_localPath = req.files?.solutionPdf?.[0]?.path || null;
+    const solutionVideo_localPath = req.files?.solutionVideo?.[0]?.path || null;
+    console.log(title, CourseCode, paperYear, forYear, paperPdf_localPath, solutionPdf_localPath, solutionVideo_localPath)
     if (!paperPdf_localPath || (!solutionPdf_localPath && !solutionVideo_localPath)) {
         throw new ApiError(400, "Question Paper and Solution are required  ")
     }
@@ -208,7 +208,7 @@ const pyqUploader = asyncHandler(async (req, res) => {
     }
     let solutionVideoLink = null
     if (solutionVideo_localPath) {
-        solutionVideoLink = await uploadOnCloudinary(solutionVideo_localPath)
+        solutionVideoLink = await uploadOnCloudinary(solutionVideo_localPath, "video")
     }
     if (!solutionVideoLink && !solutionPdfLink) {
         throw new ApiError(400, "Error while uploading solution to the cloudinary")
@@ -238,33 +238,34 @@ const pyqUploader = asyncHandler(async (req, res) => {
 })
 
 const pyq_filter = asyncHandler(async (req, res) => {
-    const { forYear, courseCode } = req.body
-    const user = await User.findById(req.user?._id)
-    const userCollege = user.collegeInfo.collegeName;
-    if (!forYear && !courseCode) {
-        throw new ApiError(404, "All fields are required for pyq filter year")
+    const { forYear, courseCode, collegeName } = req.body
+
+    console.log(forYear, courseCode, collegeName)
+    if (!forYear && !courseCode && !collegeName) {
+        throw new ApiError(404, "All fields are required for pyq filter ")
     }
 
     const filteredPyq = await PYQ.aggregate([
         {
             $match: {
                 forYear: forYear || { $exists: true },
-                courseCode: courseCode?.toUpperCase() || { $exists: true }
+                courseCode: courseCode?.toUpperCase() || { $exists: true },
+                collegeName: collegeName || { $exists: true }
             }
         },
-        {
-            $lookup: {
-                from: "users",
-                localField: "sentByAdmin",
-                foreignField: "_id",
-                as: "admin"
-            }
-        },
-        {
-            $match: {
-                "admin.collegeInfo.collegeName": userCollege
-            }
-        }
+        // {
+        //     $lookup: {
+        //         from: "users",
+        //         localField: "sentByAdmin",
+        //         foreignField: "_id",
+        //         as: "admin"
+        //     }
+        // },
+        // {
+        //     $match: {
+        //         "admin.collegeInfo.collegeName": userCollege
+        //     }
+        // }
 
     ])
 
@@ -394,6 +395,16 @@ const getPyq = asyncHandler(async (req, res) => {
 
 })
 
+const getPyqForHome = asyncHandler(async (req, res) => {
+    const all_pyqs_of_all_users = await PYQ.aggregate([
+        {
+            $match: {}
+        }
+    ])
+    return res.status(200).json(
+        new ApiResponse(200, all_pyqs_of_all_users, `Successfully fetched pyq from mongoDb for home`)
+    )
+})
 
 const getBook = asyncHandler(async (req, res) => {
     const collegeName_user = req.user?.collegeInfo.collegeName
@@ -524,5 +535,6 @@ export {
     getPyq,
     getBook,
     uploadBook,
-    fileUpload
+    fileUpload,
+    getPyqForHome
 }

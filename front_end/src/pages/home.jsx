@@ -7,8 +7,11 @@ import { PiXCircleFill } from "react-icons/pi";
 import useSignup1 from "../context/signup1.jsx";
 import Signup_2 from "../components/signup/Signup2.jsx";
 import ImageSlider from "../components/imageSlider.jsx";
+import axios from "axios";
+
 function home() {
     const { user } = useUser();
+
     const { Signup1 } = useSignup1();
     const [welcome, setwelcome] = useState("Welcome ,");
     const [doneLogin, setdoneLogin] = useState(false);
@@ -17,6 +20,7 @@ function home() {
 
     const openSignup = () => setIsSignupOpen(true);
     const closeSignup = () => setIsSignupOpen(false);
+
 
     useEffect(() => {
         if (user && (user?.data?.user?.profileComplete)) {

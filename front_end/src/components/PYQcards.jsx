@@ -1,6 +1,35 @@
 import React, { useState } from "react";
 import ashish from "../assets/logo/Ashish (1).jpeg";
+import RenderFile from "./renderfile"
+
 function PCard({ pyq }) {
+    const pdfExtensions = ['.pdf'];
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.tiff'];
+    const videoExtensions = ['.mp4', '.mov', '.avi', '.wmv', '.flv', '.mkv', '.webm'];
+
+
+    const getFileType = (url) => {
+        if (!url) {
+            return false
+        }
+        const lowerCaseUrl = url.toLowerCase();
+
+        if (pdfExtensions.some(ext => lowerCaseUrl.endsWith(ext))) {
+            return "application/pdf";
+        }
+        if (imageExtensions.some(ext => lowerCaseUrl.endsWith(ext))) {
+            return "image/";
+        }
+        if (videoExtensions.some(ext => lowerCaseUrl.endsWith(ext))) {
+            return "video/";
+        }
+
+
+    };
+    const paperPdfFormat = getFileType(pyq.paperPdf)
+    // const solutionPdfFormat = getFileType(pyq.solutionPdf)
+    // const solutionVideoFormat = getFileType(pyq.solutionVideo)
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -8,12 +37,66 @@ function PCard({ pyq }) {
     };
 
     return (
-        <div className="w-[300px] max-w-sm bg-white border border-gray-200 rounded-lg  rounded-t-2xl shadow relative">
-            <div className=" w-full h-[35px] flex  items-center ">
-                <img src={pyq.profileLink} className="w-[35px] h-[35px] rounded-2xl flex " alt="" srcset="" />
-                <h3 className="ml-[200px]">~{pyq.sender}</h3>
-                <hr />
+        <div className="w-[300px] flex flex-col max-w-sm bg-white border border-gray-200 rounded-lg  rounded-t-2xl shadow relative">
+            <div className="flex items-center">
+                <img
+                    src={pyq.profileLink}
+                    className="w-[35px] h-[35px] rounded-full"
+                    alt="profile"
+                />
+                <h3 className=" w-[150px] text-gray-400  ml-[110px] text-wrap flex justify-end">~{pyq.sender}</h3>
             </div>
+
+
+            <div className="flex flex-col items-center pb-10 mt-5">
+
+                {
+                    pyq.paperPdf &&
+                    <a href={pyq.paperPdf} target="_blank" className=" text-blue-700 hover:text-blue-800">
+                        {
+                            <RenderFile fileType={paperPdfFormat} fileLink={pyq.paperPdf} color="bg-gray-400" />
+                        }
+                    </a>
+                }
+
+
+
+                <div class="flex  md:mt-6">
+                    {
+                        pyq.solutionPdf &&
+
+
+                        <a href={pyq.solutionPdf} target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-indigo-700 rounded-lg hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-blue-300   ">Solution</a>
+
+
+                    }
+                    {
+                        pyq.solutionVideo &&
+
+
+
+                        <a href={pyq.solutionVideo} target="_blank" rel="noopener noreferrer" class="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 ">Video Solution</a>
+                    }
+                </div>
+
+
+
+            </div>
+
+
+            <hr />
+
+            <div className="flex flex-col w-full h-fit items-center justify-center mt-3">
+                <h5 className="mb-1 text-xl  text-gray-900 font-baloo font-bold text-center text-wrap">{pyq.title}</h5>
+                <div className="flex text-gray-400">
+
+                    <span >#{pyq.courseCode}</span>
+                    <span >#{pyq.paperYear}</span>
+                    <span >#{pyq.forYear}</span>
+                </div>
+
+            </div>
+            {/* 3 dots */}
             <div className="flex justify-end px-4 pt-4">
                 <button
                     id="dropdownButton"
@@ -47,21 +130,7 @@ function PCard({ pyq }) {
                     </ul>
                 </div>
             </div>
-
-            <div className="flex flex-col items-center pb-10">
-                {/* <img className="w-24 h-24 mb-3 rounded-full shadow-lg" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" /> */}
-                <h5 className="mb-1 text-xl font-medium text-gray-900">Bonnie Green</h5>
-                <span className="text-sm text-gray-500">Visual Designer</span>
-                <div className="flex mt-4 md:mt-6">
-                    <a href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
-                        Add friend
-                    </a>
-                    <a href="#" className="py-2 px-4 ms-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
-                        Message
-                    </a>
-                </div>
-            </div>
-        </div>
+        </div >
     );
 }
 
