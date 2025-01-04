@@ -16,6 +16,7 @@ import { UserProvider } from './context/user.jsx'
 import { Signup1Provider } from "./context/signup1.jsx";
 import { Signup2Provider } from "./context/signup2.jsx";
 import { PyqProvider } from './context/getPyq.jsx';
+import { BookProvider } from './context/getBook.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,8 +44,10 @@ createRoot(document.getElementById('root')).render(
         <Signup2Provider>
 
           <PyqProvider>
+            <BookProvider>
 
-            <RouterProvider router={router} />
+              <RouterProvider router={router} />
+            </BookProvider>
 
           </PyqProvider>
 

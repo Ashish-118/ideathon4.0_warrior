@@ -8,6 +8,7 @@ import usePyq from "../context/getPyq"
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import PyqUploader from '../components/pyqUploader';
+import NotFound from '../components/NotFound';
 function pyq() {
     const { user } = useUser();
     const { Pyq, setPyq } = usePyq();
@@ -15,15 +16,23 @@ function pyq() {
 
 
     useEffect(() => {
+
         const getPyq = async (e) => {
-            const response = await axios.post("http://localhost:8000/api/v1/users/pyqForHome")
-            if (response.status === 200 && !Pyq) {
-                setPyq(Array.from(response.data.data))
+
+            if (!Pyq) {
+                const response = await axios.post("http://localhost:8000/api/v1/users/pyqForHome")
+                console.log("i have been called")
+
+                if (response.status === 200) {
+                    console.log("i have been called 2")
+                    setPyq(Array.from(response.data.data))
+                }
+                console.log(response)
             }
-            console.log(response)
+
         }
         getPyq()
-    }, [pyq])
+    }, [Pyq])
 
 
     return (
@@ -63,15 +72,20 @@ function pyq() {
                         <div className=' flex'>
 
 
-                            <div className={`flex ${DisplayPyqUploader ? 'w-4/6 ' : ''} flex-wrap`}>
-                                {Pyq
-                                    &&
-                                    Pyq.map((pyq) => (
-                                        <div className='mr-3 mb-6'>
-                                            <PCard key={pyq._id} pyq={pyq} />
-                                        </div>
+                            <div className={`flex ${DisplayPyqUploader ? 'w-4/6 ' : ''}  flex-wrap`}>
+                                {
+                                    Pyq && !(Pyq.length == 0)
+                                        ?
+                                        (Pyq.map((pyq) => (
+                                            <div className='mr-3 mb-6'>
+                                                <PCard key={pyq._id} pyq={pyq} />
+                                            </div>
 
-                                    ))
+                                        )))
+                                        :
+
+                                        (<NotFound />)
+
                                 }
                             </div>
                             <div className={`flex ${DisplayPyqUploader ? ' ml-6 mt-10 w-2/6' : ''} `}>
