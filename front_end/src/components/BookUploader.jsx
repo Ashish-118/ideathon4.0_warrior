@@ -1,17 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import useUser from "../context/user";
 import axios from 'axios';
 
-function PyqUploader() {
+function BookUploader() {
     const { user } = useUser();
 
     const [forYear, setforYear] = useState("");
-    const [CourseCode, setCourseCode] = useState("");
-    const [paperYear, setpaperYear] = useState("");
+    const [author, setauthor] = useState("");
+
     const [title, settitle] = useState("");
-    const [paperPdf, setpaperPdf] = useState(null);
-    const [solutionPdf, setsolutionPdf] = useState(null);
-    const [solutionVideo, setsolutionVideo] = useState(null);
+    const [bookPdf, setbookPdf] = useState(null);
     const [StatusMessage, setStatusMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null)
@@ -22,27 +20,23 @@ function PyqUploader() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(StatusMessage)
+
+        console.log(StatusMessage, bookPdf)
         setLoading(true);
         const formData = new FormData();
         try {
             const token = user?.data?.accessToken;
             formData.append("title", title.trim());
-            formData.append("CourseCode", CourseCode.trim());
+            formData.append("author", author.trim());
             formData.append("forYear", forYear.trim());
-            formData.append("paperYear", paperYear.trim());
-            if (paperPdf) {
-                formData.append("paperPdf", paperPdf);
-            }
-            if (solutionPdf) {
-                formData.append("solutionPdf", solutionPdf);
-            }
-            if (solutionVideo) {
-                formData.append("solutionVideo", solutionVideo);
+
+            if (bookPdf) {
+                formData.append("bookPdf", bookPdf);
             }
 
-            const pyqUploadResponse = await axios.post(
-                "http://localhost:8000/api/v1/users/pyq/Uploader",
+
+            const bookUploadResponse = await axios.post(
+                "http://localhost:8000/api/v1/users/book/upload",
                 formData,
                 {
                     headers: {
@@ -50,23 +44,22 @@ function PyqUploader() {
                     },
                 }
             );
-            console.log(pyqUploadResponse)
-            if (pyqUploadResponse.status === 200) {
+            console.log(bookUploadResponse)
+            if (bookUploadResponse.status === 200) {
                 setStatusMessage("success");
 
 
             }
         } catch (error) {
+
             setStatusMessage("all reqruired fields are marked *  and one of the solution method is also required");
         } finally {
             setLoading(false);
             setforYear("");
-            setpaperPdf(null);
-            setsolutionPdf(null);
-            setsolutionVideo(null);
+            setbookPdf(null);
+
             settitle("");
-            setCourseCode("");
-            setpaperYear("");
+            setauthor("");
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
 
@@ -117,25 +110,25 @@ function PyqUploader() {
                         htmlFor="floating_title"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                        Title*
+                        Name of the Book*
                     </label>
                 </div>
                 <div className="relative z-0 w-full mb-5 group">
                     <input
                         type="text"
-                        value={CourseCode}
-                        onChange={(e) => setCourseCode(e.target.value)}
-                        name="floating_courseCode"
-                        id="floating_courseCode"
+                        value={author}
+                        onChange={(e) => setauthor(e.target.value)}
+                        name="floating_author"
+                        id="floating_author"
                         className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                         placeholder=" "
                         required
                     />
                     <label
-                        htmlFor="floating_courseCode"
+                        htmlFor="floating_author"
                         className="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >
-                        Course code*
+                        author*
                     </label>
                 </div>
                 <div class="grid md:grid-cols-2 md:gap-6">
@@ -151,55 +144,23 @@ function PyqUploader() {
                             required />
                         <label for="floating_forYear" class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">for Year*</label>
                     </div>
-                    <div class="relative z-0 w-full mb-5 group">
-                        <input
-                            type="number"
-                            name="floating_PaperYear"
-                            value={paperYear}
-                            onChange={(e) => setpaperYear(e.target.value)}
-                            id="floating_PaperYear"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                            placeholder=" "
-                            required />
-                        <label for="floating_PaperYear" class="peer-focus:font-medium absolute text-sm text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Paper Year*</label>
-                    </div>
+
                 </div>
                 <div className="max-w-lg mx-auto">
-                    <label className="block mb-2 text-sm font-medium text-gray-500" htmlFor="paper_pdf">
-                        Previous year Question paper*
+                    <label className="block mb-2 text-sm font-medium text-gray-500" htmlFor="book_pdf">
+                        upload Book*
                     </label>
                     <input
-                        ref={fileInputRef}
                         className="block w-full mb-5 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                        id="paper_pdf"
+                        id="book_pdf"
+                        accept="application/pdf"
                         type="file"
-                        onChange={(e) => handleFileChange(e, setpaperPdf)}
+                        ref={fileInputRef}
+                        onChange={(e) => handleFileChange(e, setbookPdf)}
                     />
                 </div>
-                <div className="max-w-lg mx-auto">
-                    <label className="block mb-2 text-sm font-medium text-gray-500" htmlFor="solution_pdf">
-                        Solution pdf / image
-                    </label>
-                    <input
-                        ref={fileInputRef}
-                        className="block w-full mb-5 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                        id="solution_pdf"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, setsolutionPdf)}
-                    />
-                </div>
-                <div className="max-w-lg mx-auto">
-                    <label className="block mb-2 text-sm font-medium text-gray-500" htmlFor="solution_video">
-                        Solution video (optional)
-                    </label>
-                    <input
-                        ref={fileInputRef}
-                        className="block w-full mb-5 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                        id="solution_video"
-                        type="file"
-                        onChange={(e) => handleFileChange(e, setsolutionVideo)}
-                    />
-                </div>
+
+
                 <button
                     type="submit"
                     className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center ${loading ? "cursor-not-allowed opacity-50" : ""
@@ -214,4 +175,4 @@ function PyqUploader() {
     );
 }
 
-export default PyqUploader;
+export default BookUploader;

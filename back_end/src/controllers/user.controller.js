@@ -406,6 +406,25 @@ const getPyqForHome = asyncHandler(async (req, res) => {
     )
 })
 
+const getBookForHome = asyncHandler(async (req, res) => {
+    const all_book_of_all_users = await Book.aggregate([
+        {
+            $match: {}
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "sentByAdmin",
+                foreignField: "_id",
+                as: "admin"
+            }
+        }
+    ])
+    return res.status(200).json(
+        new ApiResponse(200, all_book_of_all_users, `Successfully fetched book from mongoDb for home`)
+    )
+})
+
 const getBook = asyncHandler(async (req, res) => {
     const collegeName_user = req.user?.collegeInfo.collegeName
 
@@ -413,6 +432,15 @@ const getBook = asyncHandler(async (req, res) => {
         {
             $match: {
                 collegeName: collegeName_user
+            }
+
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "sentByAdmin",
+                foreignField: "_id",
+                as: "admin"
             }
         }
     ])
@@ -424,32 +452,31 @@ const getBook = asyncHandler(async (req, res) => {
 
 
 const uploadBook = asyncHandler(async (req, res) => {
-    const { forYear, forBranch, title, author } = req.body;
+    const { forYear, title, author } = req.body;
 
-    //  NOTE:  by default i will send forYear and forBranch as  'all'
+
     if ([title, author].some((item) => item?.trim() === "")) {
-        throw new ApiError(404, "All fields are required for pyq uploader")
+        throw new ApiError(404, "All fields are required for book uploader")
     }
     const Admin = await User.findById(req.user?._id);
 
     const file_localPath = req.file?.path;
-
+    console.log(file_localPath, forYear, title, author)
 
     if (!file_localPath) {
         throw new ApiError(400, " not found local path of book")
     }
     const fileLink = await uploadOnCloudinary(file_localPath, "raw")
 
-
+    console.log("fileLink", fileLink)
     if (!fileLink) {
         throw new ApiError(400, "Error while uploading bookPdf to cloudinary")
     }
 
 
 
-    const fileChat = await Book.create({
+    const newBook = await Book.create({
         forYear,
-        forBranch,
         title,
         author,
         bookPdf: fileLink?.url,
@@ -460,7 +487,7 @@ const uploadBook = asyncHandler(async (req, res) => {
 
     return res.status(200)
         .json(
-            new ApiResponse(200, fileChat, "successfully stored new book")
+            new ApiResponse(200, newBook, "successfully stored new book")
         )
 
 
@@ -536,5 +563,6 @@ export {
     getBook,
     uploadBook,
     fileUpload,
-    getPyqForHome
+    getPyqForHome,
+    getBookForHome
 }

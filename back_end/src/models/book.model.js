@@ -13,9 +13,7 @@ const bookSchema = new Schema({
         type: String,
         required: true
     },
-    forBranch: {
-        type: String
-    },
+
     forYear: {
         type: String
     },

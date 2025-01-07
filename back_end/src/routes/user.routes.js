@@ -12,6 +12,7 @@ import {
     getBook,
     uploadBook,
     getPyqForHome,
+    getBookForHome,
     fileUpload,
 } from "../controllers/user.controller.js"
 
@@ -60,6 +61,7 @@ router.delete("/pyq/:pyqId", DeletePyq)
 
 router.route("/pyq").post(verifyJWT, getPyq)
 router.route("/pyqForHome").post(getPyqForHome)
+router.route("/BookForHome").post(getBookForHome)
 
 router.route('/book').post(verifyJWT, getBook)
 router.route('/book/upload').post(verifyJWT, upload.single('bookPdf'), uploadBook)
