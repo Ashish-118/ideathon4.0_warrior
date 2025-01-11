@@ -13,7 +13,6 @@ const bookSchema = new Schema({
         type: String,
         required: true
     },
-
     forYear: {
         type: String
     },

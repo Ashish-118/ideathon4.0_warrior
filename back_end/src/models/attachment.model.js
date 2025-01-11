@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose"
 
 
-const chatSchema = new Schema({
+const attachSchema = new Schema({
     sentBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
@@ -11,15 +11,13 @@ const chatSchema = new Schema({
 
     },
     fileType: {
-        type: String,
+        type: [String],
     },
     fileLink: {
-        type: String,
-
+        type: [String],
     },
     ansAttachment: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Attach"
+        type: [String],
     },
     room: {
         type: String,
@@ -33,4 +31,4 @@ const chatSchema = new Schema({
 }, { timestamps: true })
 
 
-export const Chat = mongoose.model("Chat", chatSchema)
+export const Attach = mongoose.model("Attach", attachSchema)

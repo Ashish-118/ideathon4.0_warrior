@@ -76,7 +76,7 @@ export const setupChatSocket = (io) => {
 
         // Handle disconnection
         socket.on("disconnect", () => {
-            // console.log("User disconnected:", socket.id);
+
         });
     });
 };

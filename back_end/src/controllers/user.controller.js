@@ -7,6 +7,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken";
 import { Book } from "../models/book.model.js";
 import { Chat } from "../models/chat.model.js";
+import { Attach } from "../models/attachment.model.js";
 import fs from 'fs';
 
 
@@ -544,7 +545,7 @@ const fileUpload = asyncHandler(async (req, res) => {
         throw new ApiError(400, "No files found");
     }
 
-    const fileChats = [];
+    const fileAttachementLink = [];
 
     for (const file of files) {
         try {
@@ -573,7 +574,7 @@ const fileUpload = asyncHandler(async (req, res) => {
                 throw new ApiError(400, "Ashish, Error while uploading file to Cloudinary");
             }
 
-            const fileChat = await Chat.create({
+            const newAttachment = await Chat.create({
                 room,
                 sentBy,
                 sender,
@@ -581,7 +582,7 @@ const fileUpload = asyncHandler(async (req, res) => {
                 fileLink: cloudinaryResponse?.url,
             });
 
-            fileChats.push(fileChat);
+            fileAttachementLink.push(newAttachment);
 
 
         } catch (err) {
@@ -589,10 +590,97 @@ const fileUpload = asyncHandler(async (req, res) => {
         }
     }
 
-    return res.status(200).json(new ApiResponse(200, fileChats, "Successfully stored file chats"));
+    return res.status(200).json(new ApiResponse(200, fileAttachementLink, "Successfully stored file chats"));
 });
 
+const uploadAttachments = asyncHandler(async (req, res) => {
+    const { room, sentBy, sender, chatId } = req.body;
 
+
+    const Chat_toAttach = await Chat.findById(chatId)
+
+    if (!Chat_toAttach) {
+        throw new ApiError(404, "Chat not found");
+    }
+    let message = ""
+    if (Chat_toAttach.message) {
+        message = Chat_toAttach.message;
+    }
+
+    let fileLink = ""
+    let fileType = ""
+    if (Chat_toAttach.fileLink) {
+        fileLink = Chat_toAttach.fileLink
+        fileType = Chat_toAttach.fileType
+    }
+
+    if (!message || !fileLink) {
+        throw new ApiError(400, "Either message or fileLink is required for attachment")
+    }
+
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+        throw new ApiError(400, "No files found");
+    }
+
+    const fileAttachementLink = [];
+    const fileTypeAttachment = []
+    for (const file of files) {
+        try {
+
+            const file_localPath = file.path;
+
+
+            if (!file_localPath) {
+                throw new ApiError(400, `${file} localpath is not found`)
+            }
+
+
+            let cloudinaryResponse = null;
+
+            if (file.mimetype === "application/pdf") {
+                cloudinaryResponse = await uploadOnCloudinary(file_localPath, "raw");
+            } else if (file.mimetype.startsWith("image/")) {
+                cloudinaryResponse = await uploadOnCloudinary(file_localPath, "image");
+            } else if (file.mimetype.startsWith("video/")) {
+                cloudinaryResponse = await uploadOnCloudinary(file_localPath, "video");
+            } else {
+                throw new ApiError(400, `Unsupported file type: ${file.mimetype}`);
+            }
+
+            if (!cloudinaryResponse) {
+                throw new ApiError(400, "Ashish, Error while uploading file to Cloudinary");
+            }
+
+
+            fileAttachementLink.push(cloudinaryResponse?.url);
+            fileTypeAttachment.push(file.mimetype)
+
+
+        } catch (err) {
+            throw new ApiError(500, `Error processing file ${file.originalname}: ${err.message}`);
+        }
+    }
+    const newAttachment = await Attach.create({
+        room,
+        sentBy,
+        sender,
+        fileType: fileTypeAttachment,
+        fileLink: fileAttachementLink,
+    });
+
+    const UpdatedChat = await Chat.findByIdAndUpdate(
+        chatId,
+        {
+
+            attachments: newAttachment._id,
+
+        },
+        { new: true }
+    )
+    return res.status(200).json(new ApiResponse(200, newAttachment, `Successfully stored file chats and updated ${UpdatedChat}`));
+})
 const fileAttachment = asyncHandler(async (req, res) => {
     const bookId = req.params.bookId.trim()
 
@@ -629,5 +717,6 @@ export {
     getPyqForHome,
     getBookForHome,
     fileAttachment,
-    book_filter
+    book_filter,
+    uploadAttachments
 }
