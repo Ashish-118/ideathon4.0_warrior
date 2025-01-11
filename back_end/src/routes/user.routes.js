@@ -14,6 +14,8 @@ import {
     getPyqForHome,
     getBookForHome,
     fileUpload,
+    fileAttachment,
+    book_filter
 } from "../controllers/user.controller.js"
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -21,6 +23,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
 
 router.route("/next").post(signup_part1)
+
 router.route("/next/signup").post(
     upload.fields([
         {
@@ -72,4 +75,7 @@ router.route("/fileUpload").post(
 
     fileUpload
 );
+
+router.route("/book/filter").post(book_filter)
+router.route("/fileAttachment/:bookId").post(fileAttachment)
 export default router

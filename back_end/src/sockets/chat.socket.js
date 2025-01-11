@@ -54,11 +54,11 @@ export const setupChatSocket = (io) => {
                 message: chatMessage.message,
                 sender: user.username,
                 createdAt: chatMessage.createdAt,
-                chatId: chatMessage?._id
+                _id: chatMessage?._id
             });
         });
 
-        socket.on("file", async ({ userId, fileLink, fileType, createdAt }) => {
+        socket.on("file", async ({ userId, fileLink, fileType, createdAt, chatId }) => {
             const user = await User.findById(userId);
             if (!user || !user.collegeInfo?.collegeName) {
                 return socket.emit("error", "Invalid user or college information.");
@@ -69,7 +69,8 @@ export const setupChatSocket = (io) => {
                 fileLink: fileLink,
                 fileType: fileType,
                 sender: user.username,
-                createdAt: createdAt
+                createdAt: createdAt,
+                _id: chatId
             });
         })
 

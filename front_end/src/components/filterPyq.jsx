@@ -36,12 +36,12 @@ function FilterPyq() {
         }
     }, [collegeName, year, courseCode]);
 
-    // Toggle Dropdown Visibility
+
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    // Handle College Selection
+
     const handleCollegeSelect = (college) => {
         setCollegeName(college);
         setIsDropdownOpen(false);

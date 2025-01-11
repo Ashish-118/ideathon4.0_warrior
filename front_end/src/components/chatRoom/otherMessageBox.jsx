@@ -2,7 +2,7 @@ import Dropdown from "./dropDown";
 import RenderFile from "../renderfile";
 
 
-function MessageTBox({ message, sender, fileLink, fileType, timestamp }) {
+function MessageTBox({ message, sender, fileLink, fileType, timestamp, chatId }) {
     return (
         <div className="flex flex-col justify-self-start mb-5 ">
             <div className="flex flex-row ">
@@ -18,8 +18,8 @@ function MessageTBox({ message, sender, fileLink, fileType, timestamp }) {
                         <div className=" mr-auto ml-2 ">
                             {sender}
                         </div>
-                        <div>
-                            <Dropdown color={'bg-indigo-700'} />
+                        <div >
+                            <Dropdown chatId={chatId} color={'bg-indigo-700'} />
                         </div>
 
                     </div>

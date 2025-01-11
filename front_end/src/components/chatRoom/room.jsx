@@ -13,7 +13,12 @@ import { FiUpload } from "react-icons/fi";
 import ShowFiles from "./showSelectedFile.jsx";
 import axios from "axios"
 import dayjs from "dayjs"
+import Spinner from "../spinner.jsx";
+import { HiMiniXMark } from "react-icons/hi2";
+import useAttachedFile from "../../context/attachementSelected.jsx";
 function Room() {
+    const { attachedFile, setAttachedFile } = useAttachedFile();
+
     const [Message, setMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
     const { user } = useUser();
@@ -23,7 +28,8 @@ function Room() {
     const [files, setfiles] = useState(null);
     const [displayFile, setdisplayFile] = useState(null);
     const [isFileRenderingComplete, setIsFileRenderingComplete] = useState(true);
-
+    const [runSpinner, setrunSpinner] = useState(false)
+    const [cross, setcross] = useState(false);
     const formatTime12Hour = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleTimeString('en-US', {
@@ -34,8 +40,23 @@ function Room() {
         });
     };
 
+
+    const crossClicked = () => {
+
+        setSelectedFile([]);
+        setfiles(null);
+        setcross(false);
+        setAttachedFile({
+            filestoDisplay: null,
+            files: null,
+            chatId: null,
+        });
+        console.log("This is the cross", cross)
+    }
+
     const handleFileChange = (e) => {
         e.preventDefault();
+        setcross(!cross)
         const fileList = e.target.files;
         console.log('file list ', fileList)
         setfiles(fileList)
@@ -59,15 +80,15 @@ function Room() {
             });
 
             // Listen for new chat messages
-            socketInstance.on("chat", ({ message, sender, createdAt, chatId }) => {
-                setChatHistory((prev) => [...prev, { message, sender, createdAt, chatId }]);
+            socketInstance.on("chat", ({ message, sender, createdAt, _id }) => {
+                setChatHistory((prev) => [...prev, { message, sender, createdAt, _id }]);
             });
 
 
             // Listen for new file messages
-            socketInstance.on("file", ({ fileLink, fileType, sender, createdAt }) => {
+            socketInstance.on("file", ({ fileLink, fileType, sender, createdAt, _id }) => {
                 // console.log("This  is the chat history ", chatHistory)
-                setChatHistory((prev) => [...prev, { fileLink, fileType, sender, createdAt }]);
+                setChatHistory((prev) => [...prev, { fileLink, fileType, sender, createdAt, _id }]);
             });
         } else {
             console.error("User ID is missing!");
@@ -98,6 +119,8 @@ function Room() {
 
     const handleFileUpload = async (e) => {
         e.preventDefault();
+        setcross(false)
+        setrunSpinner(true)
         setIsFileRenderingComplete(false); // Disable upload button during upload
         console.log("clicked file UPload")
 
@@ -139,6 +162,9 @@ function Room() {
             console.error("Error while uploading files:", error);
         } finally {
             setIsFileRenderingComplete(true); // Re-enable upload button
+            setSelectedFile([]);
+            setfiles(null);
+            setrunSpinner(false)
         }
     };
 
@@ -150,7 +176,8 @@ function Room() {
             // Rendering starts, disable the button
             // Emit each file to the socket
             displayFile.map((file, index) => {
-                socketInstance.emit("file", { userId, fileLink: file.fileLink, fileType: file.fileType, createdAt: file.createdAt });
+
+                socketInstance.emit("file", { userId, fileLink: file.fileLink, fileType: file.fileType, createdAt: file.createdAt, chatId: file._id });
             });
             setTimeout(() => {
                 setIsFileRenderingComplete(true);
@@ -169,13 +196,26 @@ function Room() {
         }
     }, [chatHistory]);
 
+
+    useEffect(() => {
+        console.log(attachedFile)
+        if (attachedFile && attachedFile.filestoDisplay) {
+            console.log("inside use")
+            setSelectedFile(attachedFile.filestoDisplay)
+            setfiles(attachedFile.files)
+            setcross(true)
+        }
+    }, [attachedFile])
     return (
         <div>
             <div className="w-[400px]  bg-violet-700 rounded-lg border-2 h-1/4 border-menuItem shadow-2xl shadow-menuItem">
-                <div className="flex flex-col h-[45px] w-[400px] justify-center">
-                    <h1 className="text-white font-baloo text-center text-2xl mt-3">Doubt room</h1>
-                    <hr className="mt-1" />
+                <div className=" flex">
+                    <div className="flex flex-col h-[45px] w-[400px] justify-center">
+                        <h1 className="text-white font-baloo text-center text-2xl mt-3">Doubt room</h1>
+                    </div>
+
                 </div>
+                <hr className="mt-1" />
 
                 <div className="text-gray-400 flex">
                     <h3>Online</h3>
@@ -183,6 +223,14 @@ function Room() {
 
 
                 <div className=" w-[400px] h-[450px] overflow-y-auto px-3 py-2 bg-slate-800  2/4">
+                    {
+                        runSpinner && <div className="absolute left-[200px]">
+
+                            <Spinner color="blue-200" />
+
+                        </div>
+                    }
+
 
                     {chatHistory.map((payload, index) => {
                         // console.log(payload.timestamp)
@@ -206,7 +254,7 @@ function Room() {
                                                         key={index}
                                                         className="mb-2"
                                                     >
-                                                        {<MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} />}
+                                                        {<MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} />}
                                                     </div>
                                                 )
                                             }
@@ -239,30 +287,44 @@ function Room() {
                             </div>)
                     })}
 
+                    {
+                        (setfiles && cross) && <div
+                            onClick={crossClicked}
+                            className="absolute flex left-[190px] border bg-gray-400 w-[50px] h-[50px] items-center justify-center rounded-full bottom-[100px] hover:bg-gray-300 ">
+
+                            <HiMiniXMark className="text-white text-3xl" />
+                        </div>
+                    }
+
                     <div ref={messagesEndRef} />
                 </div>
 
 
                 <div className="flex justify-center items-center  h-1/4">
                     <label
-                        htmlFor="file-upload"
+                        htmlFor="room-file-upload"
                     >
                         <HiPaperClip
-                            className="text-white rounded ml-1 items-center bg-menuItem w-[30px] h-[65px] hover:text-gray-200"
+                            className={`text-white rounded ml-1 items-center bg-menuItem w-[30px] h-[65px] 
+                                ${(!attachedFile.filestoDisplay && isFileRenderingComplete) ? 'hover:text-gray-200' : 'opacity-50 cursor-not-allowed'}`}
+
                         />
                     </label>
                     <input
-                        id="file-upload"
+                        id="room-file-upload"
                         name="file-upload"
+                        accept=".pdf, image/*, video/*"
                         type="file"
                         multiple
                         className="sr-only"
-                        onChange={handleFileChange}
+                        onChange={!attachedFile.filestoDisplay && isFileRenderingComplete ? handleFileChange : null}
+                        disabled={attachedFile.filestoDisplay}
                     />
 
 
+
                     {
-                        selectedFile.length == 0
+                        selectedFile && selectedFile.length == 0
                             ?
                             <>
 
@@ -284,7 +346,7 @@ function Room() {
                                     className="h-[65px] w-[350px]  bg-white overflow-y-scroll"
                                 >
                                     {
-                                        selectedFile.length > 0 && (
+                                        selectedFile && selectedFile.length > 0 && (
                                             <div className=" flex flex-wrap mt-1 justify-center bg-white overflow-y-scroll">
                                                 {selectedFile.map((file, index) => (
                                                     <ShowFiles index={index} filePath={file} />

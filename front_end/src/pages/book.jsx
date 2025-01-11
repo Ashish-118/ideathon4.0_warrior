@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BookUploader from '../components/BookUploader'
 import NotFound from '../components/NotFound';
+import FilterBook from '../components/filterBook';
 function Book() {
     const { user } = useUser();
     const { Book, setBook } = useBook();
@@ -42,7 +43,7 @@ function Book() {
                 <div className="flex-1 flex">
 
                     <div className=" mt-[30px]  w-[250px] sticky top-[100px] self-start ">
-                        <FilterPyq />
+                        <FilterBook />
                     </div>
 
 

@@ -58,7 +58,7 @@ function Login() {
                         }
                     );
                     setPyq(Array.from(pyqResponse.data.data))
-                    console.log("PYQs fetched successfully:", pyqResponse.data.data);
+                    // console.log("PYQs fetched successfully:", pyqResponse.data.data);
                 } catch (error) {
                     console.error("Error fetching PYQs:", error.response?.data || error.message);
                 }

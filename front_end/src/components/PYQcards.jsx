@@ -37,7 +37,7 @@ function PCard({ pyq }) {
     };
 
     return (
-        <div className="w-[300px] flex flex-col max-w-sm bg-white border-2  border-indigo-800 rounded-lg  rounded-t-2xl shadow relative">
+        <div className="w-[300px] flex flex-col max-w-sm bg-white border-2  border-gray-500 rounded-lg  rounded-t-2xl shadow relative">
             <div className="flex items-center">
                 <img
                     src={pyq.profileLink}

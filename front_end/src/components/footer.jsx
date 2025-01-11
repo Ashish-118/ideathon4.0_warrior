@@ -5,6 +5,8 @@ import companyLogo from "../assets/logo/qa (2).png"
 import { HiOutlineArrowCircleRight } from "react-icons/hi";
 
 function footer() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
     return (
         <footer class=" rounded-lg  bg-gray-900  w-full shadow-xl "  >
             <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
@@ -31,7 +33,7 @@ function footer() {
                     </ul>
                 </div>
                 <hr class="my-6  sm:mx-auto border-gray-700 lg:my-8" />
-                <span class="block text-sm  sm:text-center text-gray-400">© 2024 <a href="" class="hover:underline">Q&A</a>. All Rights Reserved.</span>
+                <span class="block text-sm  sm:text-center text-gray-400">© {year} <a href="" class="hover:underline">Q&A</a>. All Rights Reserved.</span>
             </div>
         </ footer>
 

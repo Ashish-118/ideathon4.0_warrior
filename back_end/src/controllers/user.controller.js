@@ -280,6 +280,45 @@ const pyq_filter = asyncHandler(async (req, res) => {
         )
 })
 
+const book_filter = asyncHandler(async (req, res) => {
+    const { forYear, author, title } = req.body
+
+    console.log(forYear, author, title)
+    if (!forYear && !author && !title) {
+        throw new ApiError(404, "All fields are required for book filter ")
+    }
+
+    const filteredBook = await Book.aggregate([
+        {
+            $match: {
+                forYear: forYear || { $exists: true },
+                author: author || { $exists: true },
+                title: title || { $exists: true }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "sentByAdmin",
+                foreignField: "_id",
+                as: "admin"
+            }
+        }
+
+
+    ])
+
+
+    return res.status(200)
+        .json(
+            new ApiResponse(
+                200,
+                filteredBook,
+                "Successfully filtered books"
+            )
+        )
+})
+
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
@@ -359,19 +398,19 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const DeletePyq = asyncHandler(async (req, res) => {
 
-    const pyqId = req.params.pyqId.trim()
+    const bookId = req.params.bookId.trim()
 
-    if (!pyqId) {
+    if (!bookId) {
         throw new ApiError(400, "PyQ ID is required")
     }
 
-    const deletedPyq = await PYQ.findByIdAndDelete(pyqId);
+    const deletedPyq = await PYQ.findByIdAndDelete(bookId);
     if (!deletedPyq) {
         throw new ApiError(404, "PyQ not found")
     }
 
     return res.status(200).json(
-        new ApiResponse(200, {}, `succesfully deleted pyq of id ${pyqId}`)
+        new ApiResponse(200, {}, `succesfully deleted pyq of id ${bookId}`)
     )
 })
 
@@ -509,11 +548,14 @@ const fileUpload = asyncHandler(async (req, res) => {
 
     for (const file of files) {
         try {
-            // Upload the file to Cloudinary
+
             const file_localPath = file.path;
+            // console.log(file_localPath)
 
+            if (!file_localPath) {
+                throw new ApiError(400, `${file} localpath is not found`)
+            }
 
-            // Read the file locally for Base64 encoding
 
             let cloudinaryResponse = null;
 
@@ -530,13 +572,13 @@ const fileUpload = asyncHandler(async (req, res) => {
             if (!cloudinaryResponse) {
                 throw new ApiError(400, "Ashish, Error while uploading file to Cloudinary");
             }
-            // Create a file chat object
+
             const fileChat = await Chat.create({
                 room,
                 sentBy,
                 sender,
                 fileType: file.mimetype,
-                fileLink: cloudinaryResponse?.url, // Store Cloudinary link in MongoDB
+                fileLink: cloudinaryResponse?.url,
             });
 
             fileChats.push(fileChat);
@@ -549,6 +591,27 @@ const fileUpload = asyncHandler(async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, fileChats, "Successfully stored file chats"));
 });
+
+
+const fileAttachment = asyncHandler(async (req, res) => {
+    const bookId = req.params.bookId.trim()
+
+    if (!bookId) {
+        throw new ApiError(400, "book ID is required")
+    }
+
+    // const deletedPyq = await PYQ.findByIdAndDelete(bookId);
+    // if (!deletedPyq) {
+    //     throw new ApiError(404, "book not found")
+    // }
+
+    const book = await Book.findById(bookId)
+
+    return res.status(200).json(
+        new ApiResponse(200, book, `succesfully fetched book of id ${bookId}`)
+    )
+})
+
 
 export {
     signup_part1,
@@ -564,5 +627,7 @@ export {
     uploadBook,
     fileUpload,
     getPyqForHome,
-    getBookForHome
+    getBookForHome,
+    fileAttachment,
+    book_filter
 }
