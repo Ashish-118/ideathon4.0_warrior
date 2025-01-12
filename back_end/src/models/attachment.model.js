@@ -6,7 +6,7 @@ const attachSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     },
-    message: {
+    AttachTo: {
         type: String,
 
     },
@@ -16,9 +16,7 @@ const attachSchema = new Schema({
     fileLink: {
         type: [String],
     },
-    ansAttachment: {
-        type: [String],
-    },
+
     room: {
         type: String,
         required: true,

@@ -121,7 +121,8 @@ function Room() {
         e.preventDefault();
         setcross(false)
         setrunSpinner(true)
-        setIsFileRenderingComplete(false); // Disable upload button during upload
+        setIsFileRenderingComplete(false);
+
         console.log("clicked file UPload")
 
         const userId = user?.data?.user?._id;
@@ -130,6 +131,7 @@ function Room() {
 
         try {
             const formData = new FormData();
+
             if (files) {
                 console.log('selected one ', files)
                 Array.from(files).forEach((file) => {
@@ -168,7 +170,67 @@ function Room() {
         }
     };
 
+    const handleFileAttachmentUpload = async (e) => {
 
+        e.preventDefault();
+        setcross(false)
+        setrunSpinner(true)
+        setIsFileRenderingComplete(false);
+        console.log("clicked file attachment UPload")
+
+        const userId = user?.data?.user?._id;
+        const sender = user?.data?.user?.username;
+        const Room = user?.data?.user?.collegeInfo?.collegeName;
+
+        try {
+            const formData = new FormData();
+            if (files) {
+                console.log('selected one ', files)
+                Array.from(files).forEach((file) => {
+                    formData.append("fileLink", file);
+                });
+            }
+
+            formData.append("room", Room);
+            formData.append("sentBy", userId);
+            formData.append("sender", sender);
+            formData.append("chatId", attachedFile.chatId);
+
+            const response = await axios.post(
+                "http://localhost:8000/api/v1/users/uploadAttachment",
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            )
+
+            if (response.status === 200) {
+                console.log("ya this is the response  ", response)
+
+
+
+                // const filesArray = Array.from(response?.data?.data);
+                // setdisplayFile(filesArray)
+
+                setSelectedFile([]);
+                setfiles(null);
+
+
+            }
+        }
+        catch (err) {
+            console.error("Error while uploading attachment files:", err);
+        }
+        finally {
+            setIsFileRenderingComplete(true);
+            setSelectedFile([]);
+            setfiles(null);
+            setrunSpinner(false)
+            setAttachedFile({
+                filestoDisplay: null,
+                files: null,
+                chatId: null,
+            });
+        }
+    }
     useEffect(() => {
         const socketInstance = socketRef.current;
         if (socketInstance && displayFile) {
@@ -198,7 +260,7 @@ function Room() {
 
 
     useEffect(() => {
-        console.log(attachedFile)
+        // console.log(attachedFile)
         if (attachedFile && attachedFile.filestoDisplay) {
             console.log("inside use")
             setSelectedFile(attachedFile.filestoDisplay)
@@ -358,7 +420,9 @@ function Room() {
                                 </div>
                                 <FiUpload
                                     className={`text-white bg-purple-950 w-[40px] h-[65px] ${isFileRenderingComplete ? 'hover:text-gray-300' : 'opacity-50 cursor-not-allowed'}`}
-                                    onClick={isFileRenderingComplete ? handleFileUpload : null}
+                                    onClick={isFileRenderingComplete ?
+                                        (attachedFile.filestoDisplay ? handleFileAttachmentUpload : handleFileUpload)
+                                        : null}
                                 />
                             </>
 

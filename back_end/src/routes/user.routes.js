@@ -15,7 +15,8 @@ import {
     getBookForHome,
     fileUpload,
     fileAttachment,
-    book_filter
+    book_filter,
+    uploadAttachments
 } from "../controllers/user.controller.js"
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -78,4 +79,10 @@ router.route("/fileUpload").post(
 
 router.route("/book/filter").post(book_filter)
 router.route("/fileAttachment/:bookId").post(fileAttachment)
+
+
+router.route("/uploadAttachment").post(
+    upload.array("fileLink", 100),
+    uploadAttachments
+)
 export default router

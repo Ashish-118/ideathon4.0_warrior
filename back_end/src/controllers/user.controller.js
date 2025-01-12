@@ -435,6 +435,8 @@ const getPyq = asyncHandler(async (req, res) => {
 
 })
 
+
+
 const getPyqForHome = asyncHandler(async (req, res) => {
     const all_pyqs_of_all_users = await PYQ.aggregate([
         {
@@ -445,6 +447,8 @@ const getPyqForHome = asyncHandler(async (req, res) => {
         new ApiResponse(200, all_pyqs_of_all_users, `Successfully fetched pyq from mongoDb for home`)
     )
 })
+
+
 
 const getBookForHome = asyncHandler(async (req, res) => {
     const all_book_of_all_users = await Book.aggregate([
@@ -464,6 +468,7 @@ const getBookForHome = asyncHandler(async (req, res) => {
         new ApiResponse(200, all_book_of_all_users, `Successfully fetched book from mongoDb for home`)
     )
 })
+
 
 const getBook = asyncHandler(async (req, res) => {
     const collegeName_user = req.user?.collegeInfo.collegeName
@@ -534,7 +539,6 @@ const uploadBook = asyncHandler(async (req, res) => {
 })
 
 const getUserProfile = asyncHandler(async (req, res) => {
-
 })
 
 const fileUpload = asyncHandler(async (req, res) => {
@@ -602,19 +606,22 @@ const uploadAttachments = asyncHandler(async (req, res) => {
     if (!Chat_toAttach) {
         throw new ApiError(404, "Chat not found");
     }
-    let message = ""
+
+    console.log(Chat_toAttach)
+    let AttachTo = ""
+
     if (Chat_toAttach.message) {
-        message = Chat_toAttach.message;
+        AttachTo = Chat_toAttach.message;
     }
 
-    let fileLink = ""
-    let fileType = ""
-    if (Chat_toAttach.fileLink) {
-        fileLink = Chat_toAttach.fileLink
-        fileType = Chat_toAttach.fileType
+
+
+
+    if (!AttachTo && Chat_toAttach.fileLink) {
+        AttachTo = Chat_toAttach.fileLink
     }
 
-    if (!message || !fileLink) {
+    if (!AttachTo) {
         throw new ApiError(400, "Either message or fileLink is required for attachment")
     }
 
@@ -668,19 +675,21 @@ const uploadAttachments = asyncHandler(async (req, res) => {
         sender,
         fileType: fileTypeAttachment,
         fileLink: fileAttachementLink,
+        AttachTo: AttachTo
     });
 
     const UpdatedChat = await Chat.findByIdAndUpdate(
         chatId,
         {
-
-            attachments: newAttachment._id,
-
+            $push: {
+                ansAttachment: newAttachment._id,
+            }
         },
         { new: true }
     )
     return res.status(200).json(new ApiResponse(200, newAttachment, `Successfully stored file chats and updated ${UpdatedChat}`));
 })
+
 const fileAttachment = asyncHandler(async (req, res) => {
     const bookId = req.params.bookId.trim()
 

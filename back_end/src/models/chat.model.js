@@ -17,10 +17,12 @@ const chatSchema = new Schema({
         type: String,
 
     },
-    ansAttachment: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Attach"
-    },
+    ansAttachment: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Attach"
+        }
+    ],
     room: {
         type: String,
         required: true,
