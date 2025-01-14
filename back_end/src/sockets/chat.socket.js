@@ -74,6 +74,8 @@ export const setupChatSocket = (io) => {
             });
         })
 
+        // socket.on("attach",async({}))
+
         // Handle disconnection
         socket.on("disconnect", () => {
 

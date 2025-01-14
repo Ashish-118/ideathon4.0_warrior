@@ -5,7 +5,7 @@ const RenderFile = ({ fileType, fileLink, color }) => {
     // const { fileType, fileLink } = fileChat;
 
 
-    if (fileType.startsWith("image/")) {
+    if (fileType?.startsWith("image/")) {
         return (
             <div>
                 <img src={fileLink} className="max-w-full h-auto mb-1" />
@@ -27,7 +27,7 @@ const RenderFile = ({ fileType, fileLink, color }) => {
                     href={fileLink} target="_blank" rel="noopener noreferrer"> <IoEye /></a>
             </div>
         );
-    } else if (fileType.startsWith("video/")) {
+    } else if (fileType?.startsWith("video/")) {
         return (
             <div>
                 <video controls src={fileLink} className="max-w-full h-auto mb-1"></video>

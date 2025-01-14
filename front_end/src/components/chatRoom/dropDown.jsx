@@ -12,6 +12,7 @@ export default function Dropdown({ chatId }) {
         setLabel(false)
         console.log('File input changed');
         const fileList = e.target.files;
+        console.log("this is the chatId in dropdown ", chatId);
         if (fileList && fileList.length > 0) {
             const filesArray = Array.from(fileList);
             setAttachedFile({

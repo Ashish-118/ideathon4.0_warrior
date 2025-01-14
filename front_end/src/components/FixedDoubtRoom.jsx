@@ -12,12 +12,14 @@ function Fixed() {
 
     return (
         <>
-            {/* hover:text-purple-700 */}
+
             <div className="fixed top-[350px] right-[5px] w-[50px] h-[50px] flex items-center justify-center " >
                 <CiCircleChevLeft className="text-Custompurple w-[50px] h-[50px] hover:text-purple-700 " onClick={toggleAskState} />
 
             </div>
-            <div className=" w-[100px] h-[100px] flex bg-Custompurple rounded-full items-center sticky bottom-2 left-[650px] hover:bg-purple-700">
+            <div
+                onClick={toggleAskState}
+                className={` w-[100px] h-[100px] flex bg-Custompurple rounded-full items-center sticky bottom-2 left-[670px] hover:bg-purple-700 bg-${AskState ? 'purple-700' : 'Custompurple'}`}>
                 <h1 className=" text-white font-baloo text-2xl text-center"> Ask Doubt</h1>
             </div>
 
@@ -42,3 +44,4 @@ function Fixed() {
 
 
 export default Fixed
+

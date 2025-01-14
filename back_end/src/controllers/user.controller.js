@@ -597,11 +597,15 @@ const fileUpload = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, fileAttachementLink, "Successfully stored file chats"));
 });
 
+
+
 const uploadAttachments = asyncHandler(async (req, res) => {
     const { room, sentBy, sender, chatId } = req.body;
 
+    console.log("i am here 1")
 
     const Chat_toAttach = await Chat.findById(chatId)
+    console.log("i am here 2")
 
     if (!Chat_toAttach) {
         throw new ApiError(404, "Chat not found");
@@ -687,7 +691,16 @@ const uploadAttachments = asyncHandler(async (req, res) => {
         },
         { new: true }
     )
-    return res.status(200).json(new ApiResponse(200, newAttachment, `Successfully stored file chats and updated ${UpdatedChat}`));
+
+    const newChat = await Chat.create({
+        room,
+        sentBy,
+        sender,
+        ansAttachment: [newAttachment._id],
+    });
+
+
+    return res.status(200).json(new ApiResponse(200, newAttachment, `Successfully stored file chats and updated ${UpdatedChat} and new chat created is ${newChat}`));
 })
 
 const fileAttachment = asyncHandler(async (req, res) => {

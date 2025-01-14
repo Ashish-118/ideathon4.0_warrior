@@ -30,6 +30,8 @@ function Room() {
     const [isFileRenderingComplete, setIsFileRenderingComplete] = useState(true);
     const [runSpinner, setrunSpinner] = useState(false)
     const [cross, setcross] = useState(false);
+    const [attachmentResponse, setAttachmentResponse] = useState(null)
+
     const formatTime12Hour = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleTimeString('en-US', {
@@ -76,6 +78,7 @@ function Room() {
 
 
             socketInstance.on("chatHistory", (messages) => {
+                // console.log(messages)
                 setChatHistory(messages);
             });
 
@@ -170,6 +173,7 @@ function Room() {
         }
     };
 
+
     const handleFileAttachmentUpload = async (e) => {
 
         e.preventDefault();
@@ -194,6 +198,8 @@ function Room() {
             formData.append("room", Room);
             formData.append("sentBy", userId);
             formData.append("sender", sender);
+
+            console.log("this is the chat id in room ", attachedFile.chatId)
             formData.append("chatId", attachedFile.chatId);
 
             const response = await axios.post(
@@ -207,9 +213,12 @@ function Room() {
 
 
 
-                // const filesArray = Array.from(response?.data?.data);
-                // setdisplayFile(filesArray)
+                const data = response?.data?.data;
+                console.log("this is the filesArray", data)
+                setAttachmentResponse(data)
 
+
+                // setdisplayFile(filesArray)
                 setSelectedFile([]);
                 setfiles(null);
 
@@ -217,7 +226,9 @@ function Room() {
             }
         }
         catch (err) {
+
             console.error("Error while uploading attachment files:", err);
+
         }
         finally {
             setIsFileRenderingComplete(true);
@@ -231,6 +242,14 @@ function Room() {
             });
         }
     }
+
+    useEffect(() => {
+        if (attachmentResponse) {
+
+        }
+    }, [attachmentResponse])
+
+
     useEffect(() => {
         const socketInstance = socketRef.current;
         if (socketInstance && displayFile) {
@@ -251,12 +270,13 @@ function Room() {
     }, [displayFile]);
 
 
-    useEffect(() => {
 
+    useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [chatHistory]);
+
 
 
     useEffect(() => {
@@ -316,7 +336,9 @@ function Room() {
                                                         key={index}
                                                         className="mb-2"
                                                     >
-                                                        {<MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} />}
+                                                        {
+                                                            // console.log(payload._id)
+                                                            < MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} />}
                                                     </div>
                                                 )
                                             }
@@ -340,7 +362,7 @@ function Room() {
                                                             key={index}
                                                             className="mb-2"
                                                         >
-                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} />}
+                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} />}
                                                         </div>
                                                     )
                                             }

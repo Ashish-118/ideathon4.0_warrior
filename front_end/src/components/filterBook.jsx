@@ -109,7 +109,7 @@ function FilterBook() {
 
 
     return (
-        <div className="w-[220px] ml-5 border h-[550px] text-center rounded-[10px] bg-filterBG items-center sticky">
+        <div className="w-[220px] ml-5 border  h-[550px] text-center rounded-[10px] bg-white items-center sticky">
             <h1 className="text-menuItem text-3xl font-mono mt-[30px] underline underline-offset-4">Filters</h1>
 
 

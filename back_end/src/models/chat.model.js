@@ -15,7 +15,6 @@ const chatSchema = new Schema({
     },
     fileLink: {
         type: String,
-
     },
     ansAttachment: [
         {
