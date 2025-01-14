@@ -44,7 +44,8 @@ export const setupChatSocket = (io) => {
                 room,
                 sentBy: userId,
                 message,
-                sender: user.username
+                sender: user.username,
+                isAdmin: user?.isAdmin
 
             });
             await chatMessage.save();
@@ -54,7 +55,8 @@ export const setupChatSocket = (io) => {
                 message: chatMessage.message,
                 sender: user.username,
                 createdAt: chatMessage.createdAt,
-                _id: chatMessage?._id
+                _id: chatMessage?._id,
+                isAdmin: chatMessage?.isAdmin
             });
         });
 
@@ -70,7 +72,8 @@ export const setupChatSocket = (io) => {
                 fileType: fileType,
                 sender: user.username,
                 createdAt: createdAt,
-                _id: chatId
+                _id: chatId,
+                isAdmin: user?.isAdmin
             });
         })
 

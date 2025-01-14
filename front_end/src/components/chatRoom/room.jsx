@@ -83,15 +83,15 @@ function Room() {
             });
 
             // Listen for new chat messages
-            socketInstance.on("chat", ({ message, sender, createdAt, _id }) => {
-                setChatHistory((prev) => [...prev, { message, sender, createdAt, _id }]);
+            socketInstance.on("chat", ({ message, sender, createdAt, _id, isAdmin }) => {
+                setChatHistory((prev) => [...prev, { message, sender, createdAt, _id, isAdmin }]);
             });
 
 
             // Listen for new file messages
-            socketInstance.on("file", ({ fileLink, fileType, sender, createdAt, _id }) => {
+            socketInstance.on("file", ({ fileLink, fileType, sender, createdAt, _id, isAdmin }) => {
                 // console.log("This  is the chat history ", chatHistory)
-                setChatHistory((prev) => [...prev, { fileLink, fileType, sender, createdAt, _id }]);
+                setChatHistory((prev) => [...prev, { fileLink, fileType, sender, createdAt, _id, isAdmin }]);
             });
         } else {
             console.error("User ID is missing!");
@@ -308,7 +308,7 @@ function Room() {
                     {
                         runSpinner && <div className="absolute left-[200px]">
 
-                            <Spinner color="blue-200" />
+                            <Spinner />
 
                         </div>
                     }
@@ -338,7 +338,7 @@ function Room() {
                                                     >
                                                         {
                                                             // console.log(payload._id)
-                                                            < MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} />}
+                                                            < MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} isAdmin={payload.isAdmin} />}
                                                     </div>
                                                 )
                                             }
@@ -362,7 +362,7 @@ function Room() {
                                                             key={index}
                                                             className="mb-2"
                                                         >
-                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} />}
+                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} isAdmin={payload.isAdmin} />}
                                                         </div>
                                                     )
                                             }

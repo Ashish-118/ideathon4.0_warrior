@@ -26,6 +26,9 @@ const chatSchema = new Schema({
         type: String,
         required: true,
     },
+    isAdmin: {
+        type: Boolean
+    },
     sender: {
         type: String,
         required: true,

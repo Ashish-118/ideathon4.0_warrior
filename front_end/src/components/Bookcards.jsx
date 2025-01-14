@@ -129,7 +129,7 @@ function BCard({ book }) {
     const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
     return (
-        <div className="w-[320px] flex flex-col bg-gray-50 border border-gray-300 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="w-[270px] flex flex-col bg-gray-50 border border-gray-300 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center p-4 border-b border-gray-200">
                 <img
                     src={book.admin[0].avatar}

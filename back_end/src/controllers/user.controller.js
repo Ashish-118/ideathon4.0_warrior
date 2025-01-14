@@ -545,6 +545,11 @@ const fileUpload = asyncHandler(async (req, res) => {
     const { room, sentBy, sender } = req.body;
     const files = req.files;
 
+
+    const user = await User.findById(sentBy)
+    if (!user) {
+        throw new ApiError(404, "User not found")
+    }
     if (!files || files.length === 0) {
         throw new ApiError(400, "No files found");
     }
@@ -578,12 +583,14 @@ const fileUpload = asyncHandler(async (req, res) => {
                 throw new ApiError(400, "Ashish, Error while uploading file to Cloudinary");
             }
 
+
             const newAttachment = await Chat.create({
                 room,
                 sentBy,
                 sender,
                 fileType: file.mimetype,
                 fileLink: cloudinaryResponse?.url,
+                isAdmin: user?.isAdmin
             });
 
             fileAttachementLink.push(newAttachment);
@@ -609,6 +616,11 @@ const uploadAttachments = asyncHandler(async (req, res) => {
 
     if (!Chat_toAttach) {
         throw new ApiError(404, "Chat not found");
+    }
+
+    const user = await User.findById(sentBy)
+    if (!user) {
+        throw new ApiError(404, "User not found")
     }
 
     console.log(Chat_toAttach)
@@ -697,6 +709,8 @@ const uploadAttachments = asyncHandler(async (req, res) => {
         sentBy,
         sender,
         ansAttachment: [newAttachment._id],
+        isAdmin: user?.isAdmin
+
     });
 
 
