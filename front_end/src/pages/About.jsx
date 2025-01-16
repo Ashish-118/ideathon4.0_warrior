@@ -24,7 +24,7 @@ function About() {
                 </div>
             </div>
 
-            {/* Our Journey Section */}
+
             <div className="journey-section bg-gray-100 py-12">
                 <div className="max-w-5xl mx-auto text-center px-6">
                     <h2 className="text-3xl font-bold mb-8">Our Journey</h2>
@@ -46,7 +46,7 @@ function About() {
                 </div>
             </div>
 
-            {/* Meet the Team Section */}
+
             <div className="team-section py-16">
                 <div className="max-w-5xl mx-auto text-center px-6">
                     <h2 className="text-3xl font-bold mb-8">Meet the Team</h2>

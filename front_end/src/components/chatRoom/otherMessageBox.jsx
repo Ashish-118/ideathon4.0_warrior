@@ -6,7 +6,7 @@ import { FaUser } from "react-icons/fa";
 function MessageTBox({ message, sender, fileLink, fileType, timestamp, chatId, isAdmin }) {
     const { user } = useUser();
     return (
-        <div className="flex flex-col justify-self-start mb-5 ">
+        <div className="flex flex-col justify-self-start mb-5 mt-10">
             <div className="flex flex-row ">
                 {
                     (user?.data?.user?.isAdmin || isAdmin) ?
@@ -20,7 +20,7 @@ function MessageTBox({ message, sender, fileLink, fileType, timestamp, chatId, i
 
                 }
 
-                {/* user?.data?.user?._id */}
+
                 <div
                     className={` w-fit max-w-[200px]   break-words text-white  mb-2 text-center p-2  shadow-md  bg-indigo-700 rounded-lg py-0 px-0 `}
                 >

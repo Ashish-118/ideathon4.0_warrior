@@ -22,13 +22,20 @@ export const setupChatSocket = (io) => {
                 return socket.emit("error", "Invalid user or college information.");
             }
 
-            const room = user.collegeInfo.collegeName; // College name as the room
+            const room = user.collegeInfo.collegeName;
             socket.join(room);
-            // console.log(`User ${userId} joined room: ${room}`);
 
-            // Fetch and send chat history for the room
-            const chatHistory = await Chat.find({ room }).sort({ createdAt: 1 });
-            console.log(chatHistory)
+
+            // const chatHistory = await Chat.find({ room }).sort({ createdAt: 1 });
+            const chatHistory = await Chat.find({ room })
+                .sort({ createdAt: 1 })
+                .populate({
+                    path: "ansAttachment",
+                    model: "Attach",
+                    select: " AttachTo fileType fileLink room sender createdAt",
+
+                });
+            // console.log(chatHistory)
             socket.emit("chatHistory", chatHistory);
         });
 
@@ -77,7 +84,17 @@ export const setupChatSocket = (io) => {
             });
         })
 
-        // socket.on("attach",async({}))
+        socket.on("attach", async ({ attachmentResponse }) => {
+            if (!attachmentResponse) {
+                console.log("Attachment response is empty or undefined")
+            }
+            const room = attachmentResponse?.room
+            io.to(room).emit("attach", {
+
+
+                ansAttachment: attachmentResponse
+            });
+        })
 
         // Handle disconnection
         socket.on("disconnect", () => {

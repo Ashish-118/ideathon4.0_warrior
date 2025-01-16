@@ -16,6 +16,7 @@ import dayjs from "dayjs"
 import Spinner from "../spinner.jsx";
 import { HiMiniXMark } from "react-icons/hi2";
 import useAttachedFile from "../../context/attachementSelected.jsx";
+import AttachmentTBox from "../chatRoom/showAttachment.jsx"
 function Room() {
     const { attachedFile, setAttachedFile } = useAttachedFile();
 
@@ -78,21 +79,25 @@ function Room() {
 
 
             socketInstance.on("chatHistory", (messages) => {
-                // console.log(messages)
+
                 setChatHistory(messages);
             });
 
-            // Listen for new chat messages
+
             socketInstance.on("chat", ({ message, sender, createdAt, _id, isAdmin }) => {
                 setChatHistory((prev) => [...prev, { message, sender, createdAt, _id, isAdmin }]);
             });
 
 
-            // Listen for new file messages
+
             socketInstance.on("file", ({ fileLink, fileType, sender, createdAt, _id, isAdmin }) => {
-                // console.log("This  is the chat history ", chatHistory)
+
                 setChatHistory((prev) => [...prev, { fileLink, fileType, sender, createdAt, _id, isAdmin }]);
             });
+
+            socketInstance.on("attach", ({ ansAttachment }) => {
+                setChatHistory((prev) => [...prev, { ansAttachment }])
+            })
         } else {
             console.error("User ID is missing!");
         }
@@ -245,7 +250,14 @@ function Room() {
 
     useEffect(() => {
         if (attachmentResponse) {
+            const socketInstance = socketRef.current;
+            if (socketInstance) {
+                console.log("Attachment ", attachmentResponse)
+                socketInstance.emit('attach', { attachmentResponse: attachmentResponse })
 
+            } else {
+                console.error("Message is empty or socket not connected.");
+            }
         }
     }, [attachmentResponse])
 
@@ -280,7 +292,7 @@ function Room() {
 
 
     useEffect(() => {
-        // console.log(attachedFile)
+
         if (attachedFile && attachedFile.filestoDisplay) {
             console.log("inside use")
             setSelectedFile(attachedFile.filestoDisplay)
@@ -315,60 +327,68 @@ function Room() {
 
 
                     {chatHistory.map((payload, index) => {
-                        // console.log(payload.timestamp)
+                        console.log("chat history ", payload.ansAttachment)
                         return (
 
-                            <div key={index}>
-                                {
-                                    !payload.fileLink
-                                        ?
+                            (!payload.message && !payload.fileLink && payload.ansAttachment)
+                                ?
+                                <AttachmentTBox attachment={payload.ansAttachment} />
+                                :
+                                <div key={index}>
+                                    {
+                                        !payload.fileLink
+                                            ?
 
-                                        <div >
-                                            {
-                                                (payload.sender === user?.data?.user?.username) ? (
-                                                    <div
-                                                        key={index}
-                                                    >
-                                                        {<ReplyBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender='you' />}
-                                                    </div>
-                                                ) : (
-                                                    <div
-                                                        key={index}
-                                                        className="mb-2"
-                                                    >
-                                                        {
-                                                            // console.log(payload._id)
-                                                            < MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} isAdmin={payload.isAdmin} />}
-                                                    </div>
-                                                )
-                                            }
-                                        </div>
-
-                                        :
-
-                                        <div >
-                                            {
-                                                (payload.sender === user?.data?.user?.username)
-                                                    ?
-                                                    (
+                                            <div >
+                                                {
+                                                    (payload.sender === user?.data?.user?.username) ? (
                                                         <div
                                                             key={index}
                                                         >
-                                                            {<ReplyBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender='you' />}
+                                                            {<ReplyBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender='you' />}
                                                         </div>
-                                                    ) :
-                                                    (
+                                                    ) : (
                                                         <div
                                                             key={index}
                                                             className="mb-2"
                                                         >
-                                                            {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} isAdmin={payload.isAdmin} />}
+                                                            {
+                                                                // console.log(payload._id)
+                                                                < MessageTBox message={payload.message} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} isAdmin={payload.isAdmin} />}
                                                         </div>
                                                     )
-                                            }
-                                        </div>
-                                }
-                            </div>)
+                                                }
+                                            </div>
+
+                                            :
+
+                                            <div >
+                                                {
+                                                    (payload.sender === user?.data?.user?.username)
+                                                        ?
+                                                        (
+                                                            <div
+                                                                key={index}
+                                                            >
+                                                                {<ReplyBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender='you' />}
+                                                            </div>
+                                                        ) :
+                                                        (
+                                                            <div
+                                                                key={index}
+                                                                className="mb-2"
+                                                            >
+                                                                {<MessageTBox fileLink={payload.fileLink} fileType={payload.fileType} timestamp={formatTime12Hour(payload.createdAt)} sender={payload.sender} chatId={payload._id} isAdmin={payload.isAdmin} />}
+                                                            </div>
+                                                        )
+                                                }
+                                            </div>
+                                    }
+                                </div>
+
+
+
+                        )
                     })}
 
                     {

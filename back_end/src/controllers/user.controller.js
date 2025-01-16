@@ -609,10 +609,9 @@ const fileUpload = asyncHandler(async (req, res) => {
 const uploadAttachments = asyncHandler(async (req, res) => {
     const { room, sentBy, sender, chatId } = req.body;
 
-    console.log("i am here 1")
 
     const Chat_toAttach = await Chat.findById(chatId)
-    console.log("i am here 2")
+
 
     if (!Chat_toAttach) {
         throw new ApiError(404, "Chat not found");
