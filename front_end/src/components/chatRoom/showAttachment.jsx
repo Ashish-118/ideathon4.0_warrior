@@ -2,7 +2,23 @@ import RenderFile from "../renderfile";
 import { FaUser } from "react-icons/fa";
 import useUser from "../../context/user";
 function AttachmentTBox({ attachment }) {
-    const { sender, fileType, fileLink, createdAt, AttachTo } = attachment[0];
+    // const { sender, fileType, fileLink, createdAt, AttachTo } = attachment[0];
+
+
+    let sender, fileType, fileLink, createdAt, AttachTo;
+
+    if (attachment && Array.isArray(attachment) && attachment.length > 0 && attachment[0].AttachTo) {
+
+        ({ sender, fileType, fileLink, createdAt, AttachTo } = attachment[0]);
+    } else if (attachment && !Array.isArray(attachment)) {
+
+        ({ sender, fileType, fileLink, createdAt, AttachTo } = attachment);
+    } else {
+
+        sender = fileType = fileLink = createdAt = AttachTo = null;
+    }
+
+
     console.log("show attachment ", attachment);
     const { user } = useUser();
 
